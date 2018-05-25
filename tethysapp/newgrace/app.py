@@ -34,6 +34,11 @@ class Newgrace(TethysAppBase):
                 url='global_map',
                 controller='newgrace.controllers.global_map'
             ),
+            UrlMap(
+                name='region',
+                url='region',
+                controller='newgrace.controllers.region'
+            ),
         )
 
         return url_maps

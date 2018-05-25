@@ -6,7 +6,6 @@
 L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
 
     initialize: function(layer, options) {
-	console.log("initialize");
         this._markers = options.markers || [];
         this._markerColors = options.markerColors || ["#2f7ed8", "#0d233a", "#8bbc21", "#910000", "#1aadce", "#492970", "#f28f43", "#77a1e5", "#c42525", "#a6c96a"];
         this._name = options.name || "";
@@ -26,12 +25,23 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     onAdd: function(map) {
-	console.log("onAdd");
         if (this._enableNewMarkers && this._enabledNewMarkers === undefined) {
             this._enabledNewMarkers = true;
             map.doubleClickZoom.disable();
             map.on('dblclick', (function(e) {
                 // e.originalEvent.preventDefault();
+
+                // option to remove chart for each new point clicked
+          if ($("#select_storage_type").find('option:selected').val()=="http://localhost:8080/thredds/wms/testAll/grace/GRC_tot.25scaled.nc"){
+
+                if (this._chart){
+                    this._chart.destroy();
+                    delete this._chart;
+                }
+          }
+
+                // end option
+
                 this.addPositionMarker({
                     position: [e.latlng.lat, e.latlng.lng]
                 });
@@ -47,7 +57,6 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     eachLayer: function(method, context) {
-	console.log("eachLayer");
         for (var i = 0, l = this._circleLabelMarkers.length; i < l; i++) {
             method.call(context, this._circleLabelMarkers[i]);
         }
@@ -55,7 +64,6 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     onRemove: function(map){
-	console.log("onRemove");
         if (this._chart){
             this._chart.destroy();
             delete this._chart;
@@ -68,7 +76,6 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     // in order to initialize dates ranges (current min-max and layer min-max date ranges) and after that
     // add the default markers to the map
     _updateTimeDimensionAvailableTimes: function() {
-	console.log("updateTimeDImensionAvailableTimes");
         L.TimeDimension.Layer.WMS.prototype._updateTimeDimensionAvailableTimes.call(this);
         if (this._dateRange === undefined) {
             this._setDateRanges();
@@ -77,19 +84,16 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     _getNextMarkerColor: function() {
-	console.log("getNextMarkerColor");
         return this._markerColors[this._currentMarkerColor++ % this._markerColors.length];
     },
 
     _addMarkers: function() {
-	console.log("addMarkers");
         for (var i = 0, l = this._markers.length; i < l; i++) {
             this.addPositionMarker(this._markers[i]);
         }
     },
 
     addPositionMarker: function(point) {
-	console.log("addPositionMarkers");
         if (!this._map) {
             return;
         }
@@ -118,26 +122,53 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
         if (this._chart) {
             this._chart.showLoading();
         }
-        this._loadData(circle.getLatLng(), afterLoadData.bind(this, color));
+        // display all four variables on the time series plot if the Total Water Storage is selected
+        if(this._baseLayer.getURL()=="http://localhost:8080/thredds/wms/testAll/grace/GRC_tot.25scaled.nc"){
+            this._loadData(circle.getLatLng(),1, afterLoadData.bind(this, "#000099")); //total
+            this._loadData(circle.getLatLng(),2, afterLoadData.bind(this, "#02f2ff")); //surface
+            this._loadData(circle.getLatLng(),3, afterLoadData.bind(this, "#007a10")); //soil moisture
+            this._loadData(circle.getLatLng(),4, afterLoadData.bind(this, "#88523f")); //groundwater
+        }
+        else{
+        this._loadData(circle.getLatLng(),0, afterLoadData.bind(this, color)); //regular
+        }
+
+
     },
 
-    _loadData: function(latlng, callback) {
-	console.log("loadData");
+    _loadData: function(latlng,doall, callback) {
         var min = new Date(this._getNearestTime(this._currentDateRange.min.getTime()));
         var max = new Date(this._getNearestTime(this._currentDateRange.max.getTime()));
 
         var point = this._map.latLngToContainerPoint(latlng);
-        var url = this._baseLayer.getURL() + '?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84';//CRS:84
-	
+        if(doall==0){
+            var url = this._baseLayer.getURL() + '?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84';
+	    }
+	    if(doall==1){
+	    //total water
+	        var url="http://localhost:8080/thredds/wms/testAll/grace/GRC_tot.25scaled.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	    }
+	    if(doall==2){
+	    //surface water
+	        var url="http://localhost:8080/thredds/wms/testAll/grace/GRC_SW.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	        }
+	    if(doall==3){
+	        //soil moisture
+	        var url="http://localhost:8080/thredds/wms/testAll/grace/GRC_Soil_Moisture_Total_Anomaly.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	    }
+	    if(doall==4){
+	        //groundwater
+	        var url="http://localhost:8080/thredds/wms/testAll/grace/GRC_gwtest.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	        }
         url = url + '&LAYER=' + this._baseLayer.options.layers;
         url = url + '&QUERY_LAYERS=' + this._baseLayer.options.layers;
-	//console.log("original url: ", url);
         url = url + '&X=' + point.x + '&Y=' + point.y + '&I=' + point.x + '&J=' + point.y;
         var size = this._map.getSize();
         url = url + '&BBox=' + this._map.getBounds().toBBoxString();
         url = url + '&WIDTH=' + size.x + '&HEIGHT=' + size.y;
         url = url + '&INFO_FORMAT=text/xml';
         var url_without_time = url;
+
         url = url + '&TIME=' + min.toISOString() + '/' + max.toISOString();
 
         if (this._proxy) url = this._proxy + '?url=' + encodeURIComponent(url);
@@ -192,7 +223,6 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     _checkLoadNewData: function(min, max) {
-	console.log("checkLoadNewData");
         min = new Date(min);
         max = new Date(max);
 
@@ -229,7 +259,6 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     _setDateRanges: function() {
-	console.log("setDateRanges");
         if (!this._timeDimension) {
             return;
         }
@@ -259,10 +288,8 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     _loadUnits: function() {
-	console.log("loadunits");
         var url = this._baseLayer.getURL() + '?service=WMS&version=1.3.0&request=GetMetadata&item=layerDetails';
         url = url + '&layerName=' + this._baseLayer.options.layers;
-	console.log(url);
         if (this._proxy) url = this._proxy + '?url=' + encodeURIComponent(url);
         var oReq = new XMLHttpRequest();
         oReq.addEventListener("load", (function(xhr) {
@@ -275,7 +302,6 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     _createChart: function() {
-	console.log("createChart");
         var mapContainerParent = this._map.getContainer().parentNode;
         var chart_wrapper = mapContainerParent.querySelector('.chart-wrapper');
         if (!chart_wrapper) {
@@ -340,101 +366,7 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
             }
         };
 
-        if (this._baseLayer.options.layers.substring(0, 3) == 'QC_') {
-            options['yAxis'] = {};
-            options['yAxis']['tickPositions'] = [0, 1, 2, 3, 4, 6, 9];
-            options['yAxis']['plotBands'] = [{
-                from: 0,
-                to: 0.5,
-                color: '#FFFFFF',
-                label: {
-                    text: 'No QC performed',
-                    style: {
-                        color: '#606060'
-                    }
-                }
-            }, {
-                from: 0.5,
-                to: 1.5,
-                color: 'rgba(0, 255, 0, 0.5)',
-                label: {
-                    text: 'Good data',
-                    style: {
-                        color: '#606060'
-                    }
-                }
-            }, {
-                from: 1.5,
-                to: 2.5,
-                color: 'rgba(0, 255, 0, 0.2)',
-                label: {
-                    text: 'Probably good data',
-                    style: {
-                        color: '#606060'
-                    }
-                }
-            }, {
-                from: 2.5,
-                to: 3.5,
-                color: 'rgba(255, 0, 0, 0.2)',
-                label: {
-                    text: 'Probably bad data',
-                    style: {
-                        color: '#606060'
-                    }
-                }
-            }, {
-                from: 3.5,
-                to: 4.5,
-                color: 'rgba(255, 0, 0, 0.5)',
-                label: {
-                    text: 'Bad data',
-                    style: {
-                        color: '#606060'
-                    }
-                }
-            }, {
-                from: 5.5,
-                to: 6.5,
-                color: 'rgba(177, 11, 255, 0.5)',
-                label: {
-                    text: 'Spike',
-                    style: {
-                        color: '#606060'
-                    }
-                }
-            }, { // High wind
-                from: 8.5,
-                to: 9.5,
-                color: 'rgba(200, 200, 200, 0.2)',
-                label: {
-                    text: 'Missing value',
-                    style: {
-                        color: '#606060'
-                    }
-                }            }];
-        }
 
-        if (this._units == 'degree') {
-            options['yAxis'] = {};
-            options['yAxis']['tickPositions'] = [0, 90, 180, 270, 360, 361];
-            options['yAxis']['labels'] = {
-                formatter: function() {
-                    if (this.value == 0)
-                        return 'N';
-                    if (this.value == 90)
-                        return 'E';
-                    if (this.value == 180)
-                        return 'S';
-                    if (this.value == 270)
-                        return 'W';
-                    if (this.value == 360)
-                        return 'N';
-                    return this.value;
-                }
-            };
-            // options['chart']['type'] = 'heatmap';
-        };
 
         var combinedHighChartsOptions = {};
         for (var attrname in options) { combinedHighChartsOptions[attrname] = options[attrname]; }
@@ -459,7 +391,6 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     _showData: function(color, data, positionName) {
-	console.log("showData");
         var position = data.latitude + ', ' + data.longitude;
         if (positionName !== undefined) {
             position = positionName;
@@ -468,7 +399,6 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     _addSerie: function(time, variableData, position, url, color) {
-	console.log("addSerie");
         var serie = this._createSerie(time, variableData, position, url, color);
         if (!this._chart){
             this._createChart();
@@ -478,10 +408,28 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     _createSerie: function(time, variableData, position, url, color) {
-	console.log("createSerie");
         return {
-            name: this._name + ' at ' + position,
-            type: 'line',
+            name: (function(){
+                var name='';
+                if (color=="#000099"){
+                    name="Total Water Storage Anomaly (cm) at " + position;
+                }
+                else if(color=="#02f2ff"){
+                    name="Surface Water Storage (cm) at " + position;
+                }
+                else if(color=="#007a10"){
+                    name="Soil Moisture Storage Anomaly (cm) at " + position;
+                }
+                else if(color=="#88523f"){
+                    name="Groundwater Storage Anomaly (cm) at " + position;
+                }
+                else{
+                    name='Liquid Water Equivalent Thickness at ' + position;
+                }
+                return name;
+                })(),
+            //this._name + ' at ' + position,
+            type: 'area',
             id: Math.random().toString(36).substring(7),
             color: color,
             data: (function() {
@@ -497,11 +445,12 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
                     data[i] = [this_time, this_data];
                 }
                 return data;
+
             })(),
             tooltip: {
                 valueDecimals: 2,
                 valueSuffix: ' ' + this._units,
-                xDateFormat: '%A, %b %e, %H:%M',
+                xDateFormat: '%A, %b %e, %Y',
                 headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
             },
             custom: {
@@ -512,8 +461,8 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
         };
     },
 
+
     _updateSerie: function(serie, time, variableData) {
-	console.log("updateSerie");
         var length = time.length;
         var new_data = new Array(length);
         var this_time = new Date();
@@ -531,7 +480,6 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
     },
 
     _loadMoreData: function(url, mindate, maxdate, callback) {
-	console.log("loadMoreData");
         var min = new Date(this._getNearestTime(mindate.getTime()));
         var max = new Date(this._getNearestTime(maxdate.getTime()));
         url = url + '&TIME=' + min.toISOString() + '/' + max.toISOString();

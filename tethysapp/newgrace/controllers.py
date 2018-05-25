@@ -81,7 +81,7 @@ def global_map(request):
     select_storage_type = SelectInput(display_text='Select Storage Component',
                                       name='select_storage_type',
                                       multiple=False,
-                                      options=[('Total Water Storage (GRACE)',
+                                      options=[('',''),('Total Water Storage (GRACE)',
                                                 "http://localhost:8080/thredds/wms/testAll/grace/GRC_tot.25scaled.nc"), (
                                                'Surface Water Storage (GLDAS)',
                                                "http://localhost:8080/thredds/wms/testAll/grace/GRC_SW.nc"), (
@@ -91,7 +91,83 @@ def global_map(request):
                                                 "http://localhost:8080/thredds/wms/testAll/grace/GRC_gwtest.nc")],
                                       initial=['']
                                       )
-    context = {"select_storage_type":select_storage_type
+    select_legend = SelectInput(display_text='Select Symbology',
+                                      name='select_legend',
+                                      multiple=False,
+                                      options=[('Grace',"grace"),('Blue-red',"bluered"),('Red-blue', "redblue"), ('Rainbow',
+                                                          "rainbow"),
+                                               (
+                                                   'Occam',
+                                                   "occam"), (
+                                                   'ncview',
+                                                   "ncview"),
+                                               ('sst_36',
+                                                "sst_36"),
+                                               ('greyscale',"greyscale"),
+                                               ('alg2',"alg2"),
+                                               ('occam_pastel-30',"occam_pastel-30"),
+                                               ('alg',"alg"),
+                                               ('ferret',"ferret")
+                                               ],
+                                      initial=['']
+                                      )
+
+    context = {
+        "select_storage_type":select_storage_type,
+        "select_legend":select_legend
+
     }
 
     return render(request, 'newgrace/global_map.html', context)
+
+@login_required()
+def region(request):
+    """
+    Controller for the app home page.
+    """
+    select_region = SelectInput(display_text='Select Region',
+                                    name='select_region',
+                                    multiple=False,
+                                    options=[('California',"California"),('Nepal',"Nepal"),('Texas',"Texas"),('La Plata',"LaPlata")]
+                                )
+    select_storage_type = SelectInput(display_text='Select Storage Component',
+                                      name='select_storage_type',
+                                      multiple=False,
+                                      options=[('',''),('Total Water Storage (GRACE)',
+                                                "GRC_tot.25scaled.nc"), (
+                                               'Surface Water Storage (GLDAS)',
+                                               "GRC_SW.nc"), (
+                                               'Soil Moisture Storage (GLDAS)',
+                                               "GRC_Soil_Moisture_Total_Anomaly.nc"),
+                                               ('Groundwater Storage (Calculated)',
+                                                "GRC_gwtest.nc")],
+                                      initial=['']
+                                      )
+    select_legend = SelectInput(display_text='Select Symbology',
+                                      name='select_legend',
+                                      multiple=False,
+                                      options=[('Grace',"grace"),('Blue-red',"bluered"),('Red-blue', "redblue"), ('Rainbow',
+                                                          "rainbow"),
+                                               (
+                                                   'Occam',
+                                                   "occam"), (
+                                                   'ncview',
+                                                   "ncview"),
+                                               ('sst_36',
+                                                "sst_36"),
+                                               ('greyscale',"greyscale"),
+                                               ('alg2',"alg2"),
+                                               ('occam_pastel-30',"occam_pastel-30"),
+                                               ('alg',"alg"),
+                                               ('ferret',"ferret")
+                                               ],
+                                      initial=['']
+                                      )
+
+    context = {
+        "select_storage_type":select_storage_type,
+        "select_legend":select_legend,
+        "select_region":select_region
+    }
+
+    return render(request, 'newgrace/region.html', context)

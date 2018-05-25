@@ -16,9 +16,11 @@
   <li class="title">App Navigation</li>
   {% url 'newgrace:global_map' as global_map %}
   {% url 'newgrace:home' as home %}
+  {% url 'newgrace:region' as region %}
   <br>
   <li class="{% if request.path == home %}active{% endif %}"><a href="{% url 'newgrace:home' %}">Home</a></li>
   <li class="{% if request.path == global_map %}active{% endif %}"><a href="{% url 'newgrace:global_map' %}">Global Map</a></li>
+  <li class="{% if request.path == region %}active{% endif %}"><a href="{% url 'newgrace:region' %}">Regional Map</a></li>
 {% endblock %}
 
 {% block app_content %}
