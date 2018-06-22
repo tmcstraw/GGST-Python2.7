@@ -1,8 +1,25 @@
+var init_vars
+
+
+init_vars = function(){
+        $region_element= $('#region');
+        bbox =  $region_element.attr('data-bbox');
+        bbox = JSON.parse(bbox);
+        map_center = $region_element.attr('data-map-center');
+        map_center = JSON.parse(map_center);
+        wms_url = $region_element.attr('data-wms-url');
+    };
+
+
+
+
+init_vars()
 var region =$("#select_region").find('option:selected').val();
 var regioncenter;
 //These regioncenter settings here are currently hard coded. Need to set up these attributes so they are stored in persistent store
 if (region=="Nepal"){regioncenter=[28.0,84.0]};
-if (region=="California"){regioncenter=[38.0,-120.0]};
+//if (region=="California"){regioncenter=[38.0,-120.0]};
+if (region=="California"){regioncenter=map_center};
 if (region=="Texas"){regioncenter=[30.0,-100.0]};
 if (region=="LaPlata"){regioncenter=[-24.5,-55.0]};
 
@@ -23,9 +40,11 @@ var map = L.map('map', {
 //add the background imagery
 var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
     layers: 'nasa:bluemarble'
-}).addTo(map);
+    }).addTo(map);
 
-var testWMS = "http://localhost:8080/thredds/wms/testAll/grace/"+region+"/"+region+"_"+$("#select_storage_type").find('option:selected').val();
+var signal_process = $("#select_signal_process").find('option:selected').val();
+var storage_type = $("#select_storage_type").find('option:selected').val();
+var testWMS = "http://localhost:8080/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
 
 var testLayer = L.tileLayer.wms(testWMS, {
     layers:'lwe_thickness',

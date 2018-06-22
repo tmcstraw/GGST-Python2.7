@@ -57,12 +57,21 @@
     </div>
   </div>
 {% endblock %}
+
 {% block app_navigation_items %}
-  {{ block.super }}
-    <br>
-    {% gizmo select_input select_storage_type %}
-    <br>
-    {% gizmo select_input select_legend %}
+
+<li class="title">App Navigation</li>
+<li {% if request.path == '/apps/newgrace/' %} class="active" {% endif %}><a href="{% url 'newgrace:home' %}">Home</a></li>
+<li {% if 'global-map' in request.path  %} class="active" {% endif %}><a href="{% url 'newgrace:global-map' %}">Global Map</a></li>
+<br>
+{% gizmo select_input select_signal_process %}
+
+{% gizmo select_input select_storage_type %}
+
+
+{% gizmo select_input select_layer %}
+
+{% gizmo select_input select_legend %}
 
 {% endblock %}
 
