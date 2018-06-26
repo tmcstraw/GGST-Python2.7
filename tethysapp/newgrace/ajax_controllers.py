@@ -14,8 +14,14 @@ import shapely.geometry
 import os
 from config import *
 from SHAZAAM import *
-from geoserver.catalog import Catalog
+from utilities import *
 
+
+
+# def plot_region_jpl_tot(request):
+#     get_plot_ts(GLOBAL_NETCDF_DIR,'jpl','tot')
+#
+#     return JsonResponse(return_obj)
 
 
 

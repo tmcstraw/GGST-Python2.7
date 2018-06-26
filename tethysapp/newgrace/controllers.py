@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from tethys_sdk.gizmos import *
 from .app import *
 from model import *
@@ -64,10 +64,10 @@ def global_map(request):
     select_storage_type = SelectInput(display_text='Select Storage Component',
                                       name='select_storage_type',
                                       multiple=False,
-                                      options=[('Total Water Storage (GRACE)', "http://localhost:9090/thredds/wms/testAll/grace/GRC_tot.25scaled.nc"),
-                                               ('Surface Water Storage (GLDAS)', "http://localhost:8080/thredds/wms/testAll/grace/GRC_SW.nc"),
-                                               ('Soil Moisture Storage (GLDAS)', "http://localhost:8080/thredds/wms/testAll/grace/GRC_Soil_Moisture_Total_Anomaly.nc"),
-                                               ('Groundwater Storage (Calculated)', "http://localhost:8080/thredds/wms/testAll/grace/GRC_gwtest.nc")
+                                      options=[('Total Water Storage (GRACE)', "tot"),
+                                               ('Surface Water Storage (GLDAS)', "sw"),
+                                               ('Soil Moisture Storage (GLDAS)', "soil"),
+                                               ('Groundwater Storage (Calculated)', "gw")
                                                ],
                                       initial=['Total Water Storage (GRACE)']
                                       )
@@ -119,12 +119,22 @@ def region(request):
     bbox = [float(x) for x in region.latlon_bbox.strip("(").strip(")").split(',')]
     json.dumps(bbox)
 
+    regions = session.query(Region).all()
+    region_list = []
 
-    select_region = SelectInput(display_text='Select Region',
-                                    name='select_region',
+    for reg in regions:
+        region_list.append(("%s" % (reg.display_name), reg.id))
+
+    session.close()
+
+    if region_list:
+        select_region = SelectInput(display_text='Select a Region',
+                                    name='region-select',
                                     multiple=False,
-                                    options=[('California',"California"),('Nepal',"Nepal"),('Texas',"Texas"),('La Plata',"LaPlata")]
-                                )
+                                    options=region_list, )
+    else:
+        select_region = None
+
 
     grace_layer_options = get_global_dates()
 
@@ -142,11 +152,11 @@ def region(request):
     select_storage_type = SelectInput(display_text='Select Storage Component',
                                       name='select_storage_type',
                                       multiple=False,
-                                      options=[('',''),('Total Water Storage (GRACE)',"tot"),
+                                      options=[('Total Water Storage (GRACE)',"tot"),
                                                ('Surface Water Storage (GLDAS)',"sw"),
                                                ('Soil Moisture Storage (GLDAS)',"soil"),
                                                ('Groundwater Storage (Calculated)',"gw")],
-                                      initial=['']
+                                      initial=['Total Water Storage (GRACE)']
                                       )
     select_legend = SelectInput(display_text='Select Symbology',
                                       name='select_legend',
@@ -191,6 +201,7 @@ def region(request):
     return render(request, 'newgrace/region.html', context)
 
 
+@user_passes_test(user_permission_test)
 def add_region(request):
 
     region_name_input = TextInput(display_text='Region Display Name',
@@ -226,6 +237,8 @@ def add_region(request):
 
     return render(request, 'newgrace/add_region.html', context)
 
+
+@user_passes_test(user_permission_test)
 def add_thredds_server(request):
     """
         Controller for the app add_geoserver page.
@@ -261,7 +274,7 @@ def add_thredds_server(request):
 
     return render(request, 'newgrace/add_thredds_server.html', context)
 
-#@user_passes_test(user_permission_test)
+@user_passes_test(user_permission_test)
 def manage_regions(request):
     """
     Controller for the app manage_geoservers page.
@@ -280,7 +293,7 @@ def manage_regions(request):
 
     return render(request, 'newgrace/manage_regions.html', context)
 
-#@user_passes_test(user_permission_test)
+@user_passes_test(user_permission_test)
 def manage_regions_table(request):
     """
     Controller for the app manage_geoservers page.
@@ -314,7 +327,7 @@ def manage_regions_table(request):
 
     return render(request, 'newgrace/manage_regions_table.html', context)
 
-#@user_passes_test(user_permission_test)
+@user_passes_test(user_permission_test)
 def manage_thredds_servers(request):
     """
     Controller for the app manage_geoservers page.
@@ -332,7 +345,7 @@ def manage_thredds_servers(request):
 
     return render(request, 'newgrace/manage_thredds_servers.html', context)
 
-#@user_passes_test(user_permission_test)
+@user_passes_test(user_permission_test)
 def manage_thredds_servers_table(request):
     """
     Controller for the app manage_geoservers page.

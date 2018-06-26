@@ -15,13 +15,7 @@ init_vars = function(){
 
 init_vars()
 var region =$("#select_region").find('option:selected').val();
-var regioncenter;
-//These regioncenter settings here are currently hard coded. Need to set up these attributes so they are stored in persistent store
-if (region=="Nepal"){regioncenter=[28.0,84.0]};
-//if (region=="California"){regioncenter=[38.0,-120.0]};
-if (region=="California"){regioncenter=map_center};
-if (region=="Texas"){regioncenter=[30.0,-100.0]};
-if (region=="LaPlata"){regioncenter=[-24.5,-55.0]};
+var regioncenter = map_center;
 
 //add a map to the html div "map" with time dimension capabilities. Times are currently hard coded, but will need to be changed as new GRACE data comes
 var map = L.map('map', {
@@ -44,7 +38,7 @@ var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
 
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
-var testWMS = "http://localhost:8080/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
 
 var testLayer = L.tileLayer.wms(testWMS, {
     layers:'lwe_thickness',
@@ -67,6 +61,18 @@ var testLegend = L.control({
     position: 'topright'
     });
 
+
+
+
+
+
+
+
+
+
+
+
+
 //initialize a variable named zonalchart that tracks whether the zonal average timeseries has been added to the map
 var zonalchart=0;
 
@@ -79,15 +85,14 @@ $('#select_region').change(function(){
         }
     //pan to the correct location based on the selected region
     region =$("#select_region").find('option:selected').val();
-    if (region=="Nepal"){regioncenter=[28.0,84.0]};
-    if (region=="California"){regioncenter=[38.0,-120.0]};
-    if (region=="Texas"){regioncenter=[30.0,-100.0]};
-    if (region=="LaPlata"){regioncenter=[-24.5,-55.0]};
+    var regioncenter = map_center;
     map.panTo(regioncenter);
 
     map.removeLayer(testTimeLayer);
     var type=$("#select_legend").find('option:selected').val();
-    testWMS = "http://localhost:8080/thredds/wms/testAll/grace/"+region+"/"+region+"_"+$("#select_storage_type").find('option:selected').val();
+    var signal_process = $("#select_signal_process").find('option:selected').val();
+    var storage_type = $("#select_storage_type").find('option:selected').val();
+    var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
     teststyle='boxfill/'+type;
     testLayer = L.tileLayer.wms(testWMS, {
         layers:'lwe_thickness',
@@ -125,7 +130,51 @@ $('#select_region').change(function(){
 $("#select_storage_type").change(function(){
     map.removeLayer(testTimeLayer);
     var type=$("#select_legend").find('option:selected').val();
-    testWMS = "http://localhost:8080/thredds/wms/testAll/grace/"+region+"/"+region+"_"+$("#select_storage_type").find('option:selected').val();
+    var signal_process = $("#select_signal_process").find('option:selected').val();
+    var storage_type = $("#select_storage_type").find('option:selected').val();
+    var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+    teststyle='boxfill/'+type;
+
+    testLayer = L.tileLayer.wms(testWMS, {
+        layers:'lwe_thickness',
+        format: 'image/png',
+        transparent: true,
+        opacity:0.7,
+        styles: teststyle,
+        colorscalerange:'-50,50',
+        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
+    });
+
+    testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
+	    updateTimeDimension: true,
+    	name: "Liquid Water Equivalent Thickness (cm)",
+    	units: "cm",
+    	enableNewMarkers: true
+    });
+
+    testTimeLayer.addTo(map);
+
+    //add the legend to the map based on the type variable
+    testLegend.onAdd= function(map) {
+        var src=testWMS+"?REQUEST=GetLegendGraphic&LAYER=lwe_thickness&PALETTE="+type;
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML +=
+            '<img src="' + src + '" alt="legend">';
+        return div;
+    };
+    testLegend.addTo(map);
+    if (zonalchart==0){
+        addGraph(); //add the zonal average timeseries to the map
+        zonalchart=1;
+    }
+});
+
+$("#select_signal_process").change(function(){
+    map.removeLayer(testTimeLayer);
+    var type=$("#select_legend").find('option:selected').val();
+    var signal_process = $("#select_signal_process").find('option:selected').val();
+    var storage_type = $("#select_storage_type").find('option:selected').val();
+    var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
     teststyle='boxfill/'+type;
 
     testLayer = L.tileLayer.wms(testWMS, {
@@ -165,7 +214,9 @@ $("#select_storage_type").change(function(){
 $("#select_legend").change(function(){
     map.removeLayer(testTimeLayer);
     var type=$("#select_legend").find('option:selected').val();
-    testWMS = "http://localhost:8080/thredds/wms/testAll/grace/"+region+"/"+region+"_"+$("#select_storage_type").find('option:selected').val();
+    var signal_process = $("#select_signal_process").find('option:selected').val();
+    var storage_type = $("#select_storage_type").find('option:selected').val();
+    var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
     teststyle='boxfill/'+type;
     testLayer = L.tileLayer.wms(testWMS, {
         //layers: 'grace',
@@ -291,7 +342,7 @@ for (var chartnumber=0;chartnumber<4;chartnumber++)
         seriesname="Groundwater Storage";
     };
 
-    charturl="http://localhost:8080/thredds/dodsC/testAll/grace/" + region +"/" + region+ charttype +"Anomaly.nc.ascii?";
+    charturl="http://localhost:7000/thredds/dodsC/testAll/grace/" + region +"/" + region+ charttype +"Anomaly.nc.ascii?";
 
     //get the data from the charturl for the time and lwe_thickness attributes
       var xhttp = new XMLHttpRequest();
