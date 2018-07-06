@@ -16,11 +16,12 @@ import shapely.ops
 import geojson
 import pyproj
 from pyproj import Proj, transform
+from config import GLOBAL_NETCDF_DIR
 
 
 def get_global_dates():
     grace_layer_options = []
-    grace_nc = '/Users/travismcstraw/thredds_data/thredds/public/testdata/grace/GRC_jpl_tot.nc'
+    grace_nc = GLOBAL_NETCDF_DIR+'GRC_jpl_tot.nc'
     # for file in os.listdir(GLOBAL_DIR):
     #     if file.startswith('GRC') and file.endswith('.nc'):
     #         grace_nc = GLOBAL_DIR + file

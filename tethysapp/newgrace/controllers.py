@@ -131,7 +131,8 @@ def region(request):
         select_region = SelectInput(display_text='Select a Region',
                                     name='region-select',
                                     multiple=False,
-                                    options=region_list, )
+                                    options=[('California','california'),('Bangladesh','bangladesh')],
+                                    )
     else:
         select_region = None
 

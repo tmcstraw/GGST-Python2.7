@@ -14,11 +14,11 @@ var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
     layers: 'nasa:bluemarble'
 }).addTo(map);
 
-var proxy = 'server/proxy.php';
+//var proxy = 'server/proxy.php';
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
-var testWMS="http://localhost:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
-//var testWMS="http://localhost:8080/thredds/wms/testAll/grace/GRC_gwtest.nc"
+var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+//var testWMS="https://tethys.servirglobal.net/thredds/wms/tethys/GRACE/GRC_tot.25scaledtest3.nc"
 var testLayer = L.tileLayer.wms(testWMS, {
     //layers: 'grace',
     layers:'lwe_thickness',
@@ -33,7 +33,7 @@ var testLayer = L.tileLayer.wms(testWMS, {
 
 
 var testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
-	//proxy: proxy,
+//	proxy: proxy,
 	updateTimeDimension: true,
     name: "Liquid Water Equivalent Thickness",
     units: "cm",
@@ -50,7 +50,9 @@ $("#select_storage_type").change(function(){
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS="http://localhost:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+    var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+//    var testWMS="https://tethys.servirglobal.net/thredds/wms/tethys/GRACE/GRC_tot.25scaledtest3.nc"
+
     teststyle='boxfill/'+type;
     testLayer = L.tileLayer.wms(testWMS, {
         layers:'lwe_thickness',
@@ -88,7 +90,7 @@ $("#select_signal_process").change(function(){
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS="http://localhost:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+    var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
     teststyle='boxfill/'+type;
     testLayer = L.tileLayer.wms(testWMS, {
         layers:'lwe_thickness',
@@ -125,7 +127,7 @@ $("#select_legend").change(function(){
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS="http://localhost:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+    var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
     teststyle='boxfill/'+type;
     testLayer = L.tileLayer.wms(testWMS, {
         //layers: 'grace',

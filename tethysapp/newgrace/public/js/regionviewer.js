@@ -8,13 +8,15 @@ init_vars = function(){
         map_center = $region_element.attr('data-map-center');
         map_center = JSON.parse(map_center);
         wms_url = $region_element.attr('data-wms-url');
+        region =$("#region-select").find('option:selected').val();
+        regioncenter = map_center;
     };
 
 
 
 
 init_vars()
-var region =$("#select_region").find('option:selected').val();
+var region =$("#region-select").find('option:selected').val();
 var regioncenter = map_center;
 
 //add a map to the html div "map" with time dimension capabilities. Times are currently hard coded, but will need to be changed as new GRACE data comes
@@ -84,7 +86,7 @@ $('#select_region').change(function(){
         delete mychart;
         }
     //pan to the correct location based on the selected region
-    region =$("#select_region").find('option:selected').val();
+    var region =$("#select_region").find('option:selected').val();
     var regioncenter = map_center;
     map.panTo(regioncenter);
 
@@ -251,8 +253,10 @@ $("#select_legend").change(function(){
 
 //The addGraph function displays the time series for the regional Average
 function addGraph(){
+    var signal_process = $("#select_signal_process").find('option:selected').val();
+    var storage_type = $("#select_storage_type").find('option:selected').val();
 
-mychart=Highcharts.stockChart('chart', {
+    mychart=Highcharts.stockChart('chart', {
             legend: {
                     enabled: true
             },
@@ -277,7 +281,7 @@ mychart=Highcharts.stockChart('chart', {
                         width: 2,
                         id: 'pbCurrentTime'
                     }]
-                },
+            },
 
             title: {
                 text: region+ ' Regional Average Liquid Water Equivalent Thickness (cm)'
@@ -297,8 +301,8 @@ mychart=Highcharts.stockChart('chart', {
                             }
                         }
                     }
-                }
-        });//end of High Charts stuff
+            }
+    });//end of High Charts stuff
 
     testTimeLayer._timeDimension.on('timeload', (function() {
                 if (!mychart){
@@ -342,7 +346,7 @@ for (var chartnumber=0;chartnumber<4;chartnumber++)
         seriesname="Groundwater Storage";
     };
 
-    charturl="http://localhost:7000/thredds/dodsC/testAll/grace/" + region +"/" + region+ charttype +"Anomaly.nc.ascii?";
+    charturl="http://localhost:7000/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+".nc.ascii?";
 
     //get the data from the charturl for the time and lwe_thickness attributes
       var xhttp = new XMLHttpRequest();

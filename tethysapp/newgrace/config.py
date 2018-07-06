@@ -9,7 +9,7 @@ BASE_PATH = '/Users/travismcstraw/tethysdev/NewGRACE/tethysapp/newgrace/workspac
 
 SHELL_DIR = BASE_PATH+'shell/'
 
-GLOBAL_NETCDF_DIR = '/Users/travismcstraw/thredds_data/thredds/public/testdata/grace/'
+GLOBAL_NETCDF_DIR = '/Users/travismcstraw/thredds_data/grace/'
 
 SHAPE_DIR = BASE_PATH+'shape/'
 
