@@ -155,7 +155,7 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
             this._chart.showLoading();
         }
         // display all four variables on the time series plot if the Total Water Storage is selected
-        if(this._baseLayer.getURL()=="http://tethys.byu.edu:7000/thredds/wms/testAll/grace/GRC_tot.25scaled.nc"){
+        if(this._baseLayer.getURL()=="http://localhost:7000/thredds/wms/testAll/grace/GRC_tot.25scaled.nc"){
             this._loadData(circle.getLatLng(),1, afterLoadData.bind(this, "#000099")); //total
             this._loadData(circle.getLatLng(),2, afterLoadData.bind(this, "#02f2ff")); //surface
             this._loadData(circle.getLatLng(),3, afterLoadData.bind(this, "#007a10")); //soil moisture
@@ -179,19 +179,19 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
 	    }
 	    if(doall==1){
 	    //total water
-	        var url="http://tethys.byu.edu:7000/thredds/wms/testAll/grace/GRC_jpl_tot.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	        var url="http://localhost:7000/thredds/wms/testAll/grace/GRC_jpl_tot.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
 	    }
 	    if(doall==2){
 	    //surface water
-	        var url="http://tethys.byu.edu:7000/thredds/wms/testAll/grace/GRC_jpl_sw.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	        var url="http://localhost:7000/thredds/wms/testAll/grace/GRC_jpl_sw.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
 	        }
 	    if(doall==3){
 	        //soil moisture
-	        var url="http://tethys.byu.edu:7000/thredds/wms/testAll/grace/GRC_jpl_soil.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	        var url="http://localhost:7000/thredds/wms/testAll/grace/GRC_jpl_soil.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
 	    }
 	    if(doall==4){
 	        //groundwater
-	        var url="http://tethys.byu.edu:7000/thredds/wms/testAll/grace/GRC_jpl_gw.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	        var url="http://localhost:7000/thredds/wms/testAll/grace/GRC_jpl_gw.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
 	        }
         url = url + '&LAYER=' + this._baseLayer.options.layers;
         url = url + '&QUERY_LAYERS=' + this._baseLayer.options.layers;
