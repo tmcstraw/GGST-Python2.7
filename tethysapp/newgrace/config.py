@@ -5,11 +5,11 @@ from .app import Newgrace as app
 
 app_workspace = app.get_app_workspace()
 app_wksp_path = os.path.join(app_workspace.path,'')
-BASE_PATH = '/Users/travismcstraw/tethysdev/NewGRACE/tethysapp/newgrace/workspaces/app_workspace/'
+BASE_PATH = '/home/tethys/apps/GRACE2/tethysapp/newgrace/workspaces/app_workspace/'
 
 SHELL_DIR = BASE_PATH+'shell/'
 
-GLOBAL_NETCDF_DIR = '/Users/travismcstraw/thredds_data/grace/'
+GLOBAL_NETCDF_DIR = '/home/tethys/Thredds/grace/'
 
 SHAPE_DIR = BASE_PATH+'shape/'
 
