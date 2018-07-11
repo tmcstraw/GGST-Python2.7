@@ -8,15 +8,16 @@ init_vars = function(){
         map_center = $region_element.attr('data-map-center');
         map_center = JSON.parse(map_center);
         wms_url = $region_element.attr('data-wms-url');
-        region =$("#region-select").find('option:selected').val();
+        region_name =$region_element.attr('lower_name');
         regioncenter = map_center;
+
     };
 
 
 
 
 init_vars()
-var region =$("#region-select").find('option:selected').val();
+var region =region_name;
 var regioncenter = map_center;
 
 //add a map to the html div "map" with time dimension capabilities. Times are currently hard coded, but will need to be changed as new GRACE data comes
@@ -27,9 +28,16 @@ var map = L.map('map', {
     timeDimension: true,
     timeDimensionOptions:{
     
-			 times:"2002-04-16T00:00:00.000Z,2002-05-10T00:00:00.000Z,2002-08-16T12:00:00.000Z,2002-09-16T00:00:00.000Z,2002-10-16T12:00:00.000Z,2002-11-16T00:00:00.000Z,2002-12-16T12:00:00.000Z,2003-01-16T12:00:00.000Z,2003-02-15T00:00:00.000Z,2003-03-16T12:00:00.000Z,2003-04-16T00:00:00.000Z,2003-05-11T12:00:00.000Z,2003-07-16T12:00:00.000Z,2003-08-16T12:00:00.000Z,2003-09-16T00:00:00.000Z,2003-10-16T12:00:00.000Z,2003-11-16T00:00:00.000Z,2003-12-16T12:00:00.000Z,2004-01-07T12:00:00.000Z,2004-02-17T00:00:00.000Z,2004-03-16T12:00:00.000Z,2004-04-16T00:00:00.000Z,2004-05-16T12:00:00.000Z,2004-06-16T00:00:00.000Z,2004-07-16T12:00:00.000Z,2004-08-16T12:00:00.000Z,2004-09-16T00:00:00.000Z,2004-10-16T12:00:00.000Z,2004-11-16T00:00:00.000Z,2004-12-16T12:00:00.000Z,2005-01-16T12:00:00.000Z,2005-02-15T00:00:00.000Z,2005-03-16T12:00:00.000Z,2005-04-16T00:00:00.000Z,2005-05-16T12:00:00.000Z,2005-06-16T00:00:00.000Z,2005-07-16T12:00:00.000Z,2005-08-16T12:00:00.000Z,2005-09-16T00:00:00.000Z,2005-10-16T12:00:00.000Z,2005-11-16T00:00:00.000Z,2005-12-16T12:00:00.000Z,2006-01-16T12:00:00.000Z,2006-02-15T00:00:00.000Z,2006-03-16T12:00:00.000Z,2006-04-16T00:00:00.000Z,2006-05-16T12:00:00.000Z,2006-06-16T00:00:00.000Z,2006-07-16T12:00:00.000Z,2006-08-16T12:00:00.000Z,2006-09-16T00:00:00.000Z,2006-10-16T12:00:00.000Z,2006-11-16T00:00:00.000Z,2006-12-16T12:00:00.000Z,2007-01-16T12:00:00.000Z,2007-02-15T00:00:00.000Z,2007-03-16T12:00:00.000Z,2007-04-16T00:00:00.000Z,2007-05-16T12:00:00.000Z,2007-06-16T00:00:00.000Z,2007-07-16T12:00:00.000Z,2007-08-16T12:00:00.000Z,2007-09-16T00:00:00.000Z,2007-10-16T12:00:00.000Z,2007-11-16T00:00:00.000Z,2007-12-16T12:00:00.000Z,2008-01-16T12:00:00.000Z,2008-02-15T12:00:00.000Z,2008-03-16T12:00:00.000Z,2008-04-16T00:00:00.000Z,2008-05-16T12:00:00.000Z,2008-06-16T00:00:00.000Z,2008-07-16T12:00:00.000Z,2008-08-16T12:00:00.000Z,2008-09-16T00:00:00.000Z,2008-10-16T12:00:00.000Z,2008-11-16T00:00:00.000Z,2008-12-16T12:00:00.000Z,2009-01-16T12:00:00.000Z,2009-02-15T00:00:00.000Z,2009-03-16T12:00:00.000Z,2009-04-16T00:00:00.000Z,2009-05-16T12:00:00.000Z,2009-06-16T00:00:00.000Z,2009-07-16T12:00:00.000Z,2009-08-16T12:00:00.000Z,2009-09-16T00:00:00.000Z,2009-10-16T12:00:00.000Z,2009-11-16T00:00:00.000Z,2009-12-16T12:00:00.000Z,2010-01-16T12:00:00.000Z,2010-02-15T00:00:00.000Z,2010-03-16T12:00:00.000Z,2010-04-16T00:00:00.000Z,2010-05-16T12:00:00.000Z,2010-06-16T00:00:00.000Z,2010-07-16T12:00:00.000Z,2010-08-16T12:00:00.000Z,2010-09-16T00:00:00.000Z,2010-10-16T12:00:00.000Z,2010-11-16T00:00:00.000Z,2010-12-16T12:00:00.000Z,2011-02-18T12:00:00.000Z,2011-03-16T12:00:00.000Z,2011-04-16T00:00:00.000Z,2011-05-16T12:00:00.000Z,2011-07-19T12:00:00.000Z,2011-08-16T12:00:00.000Z,2011-09-16T00:00:00.000Z,2011-10-16T12:00:00.000Z,2011-11-01T12:00:00.000Z,2012-01-02T00:00:00.000Z,2012-01-16T12:00:00.000Z,2012-02-15T12:00:00.000Z,2012-03-16T12:00:00.000Z,2012-04-10T12:00:00.000Z,2012-06-16T00:00:00.000Z,2012-07-16T12:00:00.000Z,2012-08-16T12:00:00.000Z,2012-09-13T00:00:00.000Z,2012-11-20T00:00:00.000Z,2012-12-16T12:00:00.000Z,2013-01-16T12:00:00.000Z,2013-02-14T00:00:00.000Z,2013-04-21T12:00:00.000Z,2013-05-16T12:00:00.000Z,2013-06-16T00:00:00.000Z,2013-07-16T12:00:00.000Z,2013-10-16T12:00:00.000Z,2013-11-16T00:00:00.000Z,2013-12-16T12:00:00.000Z,2014-01-09T12:00:00.000Z,2014-03-17T12:00:00.000Z,2014-04-16T00:00:00.000Z,2014-05-16T12:00:00.000Z,2014-06-13T00:00:00.000Z,2014-08-16T12:00:00.000Z,2014-09-16T00:00:00.000Z,2014-10-16T12:00:00.000Z,2014-11-17T00:00:00.000Z,2015-01-22T12:00:00.000Z,2015-02-15T00:00:00.000Z,2015-03-16T12:00:00.000Z,2015-04-16T00:00:00.000Z,2015-04-27T00:00:00.000Z,2015-07-15T12:00:00.000Z,2015-08-16T12:00:00.000Z,2015-09-14T12:00:00.000Z,2015-12-23T00:00:00.000Z,2016-01-16T12:00:00.000Z,2016-02-14T00:00:00.000Z,2016-03-16T12:00:00.000Z,2016-05-20T12:00:00.000Z,2016-06-16T00:00:00.000Z,2016-07-15T12:00:00.000Z,2016-08-21T12:00:00.000Z"
+			 times:"2002-04-16T00:00:00.000Z,2002-05-10T00:00:00.000Z,2002-08-16T12:00:00.000Z,2002-09-16T00:00:00.000Z,2002-10-16T12:00:00.000Z,2002-11-16T00:00:00.000Z,2002-12-16T12:00:00.000Z,2003-01-16T12:00:00.000Z,2003-02-15T00:00:00.000Z,2003-03-16T12:00:00.000Z,2003-04-16T00:00:00.000Z,2003-05-11T12:00:00.000Z,2003-07-16T12:00:00.000Z,2003-08-16T12:00:00.000Z,2003-09-16T00:00:00.000Z,2003-10-16T12:00:00.000Z,2003-11-16T00:00:00.000Z,2003-12-16T12:00:00.000Z,2004-01-07T12:00:00.000Z,2004-02-17T00:00:00.000Z,2004-03-16T12:00:00.000Z,2004-04-16T00:00:00.000Z,2004-05-16T12:00:00.000Z,2004-06-16T00:00:00.000Z,2004-07-16T12:00:00.000Z,2004-08-16T12:00:00.000Z,2004-09-16T00:00:00.000Z,2004-10-16T12:00:00.000Z,2004-11-16T00:00:00.000Z,2004-12-16T12:00:00.000Z,2005-01-16T12:00:00.000Z,2005-02-15T00:00:00.000Z,2005-03-16T12:00:00.000Z,2005-04-16T00:00:00.000Z,2005-05-16T12:00:00.000Z,2005-06-16T00:00:00.000Z,2005-07-16T12:00:00.000Z,2005-08-16T12:00:00.000Z,2005-09-16T00:00:00.000Z,2005-10-16T12:00:00.000Z,2005-11-16T00:00:00.000Z,2005-12-16T12:00:00.000Z,2006-01-16T12:00:00.000Z,2006-02-15T00:00:00.000Z,2006-03-16T12:00:00.000Z,2006-04-16T00:00:00.000Z,2006-05-16T12:00:00.000Z,2006-06-16T00:00:00.000Z,2006-07-16T12:00:00.000Z,2006-08-16T12:00:00.000Z,2006-09-16T00:00:00.000Z,2006-10-16T12:00:00.000Z,2006-11-16T00:00:00.000Z,2006-12-16T12:00:00.000Z,2007-01-16T12:00:00.000Z,2007-02-15T00:00:00.000Z,2007-03-16T12:00:00.000Z,2007-04-16T00:00:00.000Z,2007-05-16T12:00:00.000Z,2007-06-16T00:00:00.000Z,2007-07-16T12:00:00.000Z,2007-08-16T12:00:00.000Z,2007-09-16T00:00:00.000Z,2007-10-16T12:00:00.000Z,2007-11-16T00:00:00.000Z,2007-12-16T12:00:00.000Z,2008-01-16T12:00:00.000Z,2008-02-15T12:00:00.000Z,2008-03-16T12:00:00.000Z,2008-04-16T00:00:00.000Z,2008-05-16T12:00:00.000Z,2008-06-16T00:00:00.000Z,2008-07-16T12:00:00.000Z,2008-08-16T12:00:00.000Z,2008-09-16T00:00:00.000Z,2008-10-16T12:00:00.000Z,2008-11-16T00:00:00.000Z,2008-12-16T12:00:00.000Z,2009-01-16T12:00:00.000Z,2009-02-15T00:00:00.000Z,2009-03-16T12:00:00.000Z,2009-04-16T00:00:00.000Z,2009-05-16T12:00:00.000Z,2009-06-16T00:00:00.000Z,2009-07-16T12:00:00.000Z,2009-08-16T12:00:00.000Z,2009-09-16T00:00:00.000Z,2009-10-16T12:00:00.000Z,2009-11-16T00:00:00.000Z,2009-12-16T12:00:00.000Z,2010-01-16T12:00:00.000Z,2010-02-15T00:00:00.000Z,2010-03-16T12:00:00.000Z,2010-04-16T00:00:00.000Z,2010-05-16T12:00:00.000Z,2010-06-16T00:00:00.000Z,2010-07-16T12:00:00.000Z,2010-08-16T12:00:00.000Z,2010-09-16T00:00:00.000Z,2010-10-16T12:00:00.000Z,2010-11-16T00:00:00.000Z,2010-12-16T12:00:00.000Z,2011-02-18T12:00:00.000Z,2011-03-16T12:00:00.000Z,2011-04-16T00:00:00.000Z,2011-05-16T12:00:00.000Z,2011-07-19T12:00:00.000Z,2011-08-16T12:00:00.000Z,2011-09-16T00:00:00.000Z,2011-10-16T12:00:00.000Z,2011-11-01T12:00:00.000Z,2012-01-02T00:00:00.000Z,2012-01-16T12:00:00.000Z,2012-02-15T12:00:00.000Z,2012-03-16T12:00:00.000Z,2012-04-10T12:00:00.000Z,2012-06-16T00:00:00.000Z,2012-07-16T12:00:00.000Z,2012-08-16T12:00:00.000Z,2012-09-13T00:00:00.000Z,2012-11-20T00:00:00.000Z,2012-12-16T12:00:00.000Z,2013-01-16T12:00:00.000Z,2013-02-14T00:00:00.000Z,2013-04-21T12:00:00.000Z,2013-05-16T12:00:00.000Z,2013-06-16T00:00:00.000Z,2013-07-16T12:00:00.000Z,2013-10-16T12:00:00.000Z,2013-11-16T00:00:00.000Z,2013-12-16T12:00:00.000Z,2014-01-09T12:00:00.000Z,2014-03-17T12:00:00.000Z,2014-04-16T00:00:00.000Z,2014-05-16T12:00:00.000Z,2014-06-13T00:00:00.000Z,2014-08-16T12:00:00.000Z,2014-09-16T00:00:00.000Z,2014-10-16T12:00:00.000Z,2014-11-17T00:00:00.000Z,2015-01-22T12:00:00.000Z,2015-02-15T00:00:00.000Z,2015-03-16T12:00:00.000Z,2015-04-16T00:00:00.000Z,2015-04-27T00:00:00.000Z,2015-07-15T12:00:00.000Z,2015-08-16T12:00:00.000Z,2015-09-14T12:00:00.000Z,2015-12-23T00:00:00.000Z,2016-01-16T12:00:00.000Z,2016-02-14T00:00:00.000Z,2016-03-16T12:00:00.000Z,2016-05-20T12:00:00.000Z,2016-06-16T00:00:00.000Z,2016-07-15T12:00:00.000Z,2016-08-21T12:00:00.000Z",
+			 currentTime: Date.parse("2002-04-16T00:00:00.000Z"),
     },
-    timeDimensionControl: true,  
+    timeDimensionControl: true,
+    timeDimensionControlOptions:{
+                playerOptions:{
+                        loop:true,
+                        startover:true,
+                }
+    },
     center: regioncenter,
 });
 
@@ -41,6 +49,9 @@ var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
 var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+var colormin = $("#col_min").val();
+var colormax = $("#col_max").val();
+var opac = $("#opacity_val").val();
 
 var testLayer = L.tileLayer.wms(testWMS, {
     layers:'lwe_thickness',
@@ -49,6 +60,7 @@ var testLayer = L.tileLayer.wms(testWMS, {
     opacity:0.7,
     style: 'boxfill/sst_36',
     colorscalerange:'-50,50',
+    numcolorbands: 1500,
     attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
 });
 
@@ -78,183 +90,13 @@ var testLegend = L.control({
 //initialize a variable named zonalchart that tracks whether the zonal average timeseries has been added to the map
 var zonalchart=0;
 
-$('#select_region').change(function(){
-    zonalchart=0;
-    //if the chart for zonal statistics already exists, delete it because we are replacing it with the chart for another region
-    if (typeof mychart !== 'undefined'){
-        mychart.destroy();
-        delete mychart;
-        }
-    //pan to the correct location based on the selected region
-    var region =$("#select_region").find('option:selected').val();
-    var regioncenter = map_center;
-    map.panTo(regioncenter);
-
-    map.removeLayer(testTimeLayer);
-    var type=$("#select_legend").find('option:selected').val();
-    var signal_process = $("#select_signal_process").find('option:selected').val();
-    var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
-    teststyle='boxfill/'+type;
-    testLayer = L.tileLayer.wms(testWMS, {
-        layers:'lwe_thickness',
-        format: 'image/png',
-        transparent: true,
-        opacity:0.7,
-        styles: teststyle,
-        colorscalerange:'-50,50',
-        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
-    });
-    testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
-	    updateTimeDimension: true,
-    	name: "Liquid Water Equivalent Thickness (cm)",
-    	units: "cm",
-    	enableNewMarkers: true
-    });
-
-    testTimeLayer.addTo(map);
-
-    //add the legend to the map based on the type variable
-    testLegend.onAdd= function(map) {
-        var src=testWMS+"?REQUEST=GetLegendGraphic&LAYER=lwe_thickness&PALETTE="+type;
-        var div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML +=
-            '<img src="' + src + '" alt="legend">';
-        return div;
-    };
-    testLegend.addTo(map);
-    if (zonalchart==0){
-        addGraph(); //add the zonal average timeseries to the map
-        zonalchart=1;
-    }
-});
-
-$("#select_storage_type").change(function(){
-    map.removeLayer(testTimeLayer);
-    var type=$("#select_legend").find('option:selected').val();
-    var signal_process = $("#select_signal_process").find('option:selected').val();
-    var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
-    teststyle='boxfill/'+type;
-
-    testLayer = L.tileLayer.wms(testWMS, {
-        layers:'lwe_thickness',
-        format: 'image/png',
-        transparent: true,
-        opacity:0.7,
-        styles: teststyle,
-        colorscalerange:'-50,50',
-        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
-    });
-
-    testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
-	    updateTimeDimension: true,
-    	name: "Liquid Water Equivalent Thickness (cm)",
-    	units: "cm",
-    	enableNewMarkers: true
-    });
-
-    testTimeLayer.addTo(map);
-
-    //add the legend to the map based on the type variable
-    testLegend.onAdd= function(map) {
-        var src=testWMS+"?REQUEST=GetLegendGraphic&LAYER=lwe_thickness&PALETTE="+type;
-        var div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML +=
-            '<img src="' + src + '" alt="legend">';
-        return div;
-    };
-    testLegend.addTo(map);
-    if (zonalchart==0){
-        addGraph(); //add the zonal average timeseries to the map
-        zonalchart=1;
-    }
-});
-
-$("#select_signal_process").change(function(){
-    map.removeLayer(testTimeLayer);
-    var type=$("#select_legend").find('option:selected').val();
-    var signal_process = $("#select_signal_process").find('option:selected').val();
-    var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
-    teststyle='boxfill/'+type;
-
-    testLayer = L.tileLayer.wms(testWMS, {
-        layers:'lwe_thickness',
-        format: 'image/png',
-        transparent: true,
-        opacity:0.7,
-        styles: teststyle,
-        colorscalerange:'-50,50',
-        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
-    });
-
-    testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
-	    updateTimeDimension: true,
-    	name: "Liquid Water Equivalent Thickness (cm)",
-    	units: "cm",
-    	enableNewMarkers: true
-    });
-
-    testTimeLayer.addTo(map);
-
-    //add the legend to the map based on the type variable
-    testLegend.onAdd= function(map) {
-        var src=testWMS+"?REQUEST=GetLegendGraphic&LAYER=lwe_thickness&PALETTE="+type;
-        var div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML +=
-            '<img src="' + src + '" alt="legend">';
-        return div;
-    };
-    testLegend.addTo(map);
-    if (zonalchart==0){
-        addGraph(); //add the zonal average timeseries to the map
-        zonalchart=1;
-    }
-});
-
-$("#select_legend").change(function(){
-    map.removeLayer(testTimeLayer);
-    var type=$("#select_legend").find('option:selected').val();
-    var signal_process = $("#select_signal_process").find('option:selected').val();
-    var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
-    teststyle='boxfill/'+type;
-    testLayer = L.tileLayer.wms(testWMS, {
-        //layers: 'grace',
-        layers:'lwe_thickness',
-        format: 'image/png',
-        transparent: true,
-        opacity:0.7,
-        styles: teststyle,
-        colorscalerange:'-50,50',
-        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
-    });
-    testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
-	    //proxy: proxy,
-	    updateTimeDimension: true,
-    	name: "Liquid Water Equivalent Thickness",
-    	units: "cm",
-    	enableNewMarkers: true
-    });
-
-    testTimeLayer.addTo(map);
-    //add the legend to the map based on the type variable
-    testLegend.onAdd= function(map) {
-        var src=testWMS+"?REQUEST=GetLegendGraphic&LAYER=lwe_thickness&PALETTE="+type;
-        var div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML +=
-            '<img src="' + src + '" alt="legend">';
-        return div;
-    };
-    testLegend.addTo(map);
-    });
-
 
 //The addGraph function displays the time series for the regional Average
 function addGraph(){
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
+    var signal_name = $("#select_signal_process").find('option:selected').text();
+    var storage_name = $("#select_storage_type").find('option:selected').text();
 
     mychart=Highcharts.stockChart('chart', {
             legend: {
@@ -320,33 +162,32 @@ function addGraph(){
 
 
 //for loop to go through all 4 types of data,load the data, and display it on the highcharts time series
-for (var chartnumber=0;chartnumber<4;chartnumber++)
-{
+//for (var chartnumber=0;chartnumber<4;chartnumber++)
+//{
     var color;
     var charttype;
     var seriesname;
-    if (chartnumber==0){
-        charttype="Total";
-        color="#000099";
-        seriesname="Total Water Storage";
-    }
-    else if (chartnumber==1){
-        charttype="SW";
-        color="02f2ff";
-        seriesname="Surface Water Storage";
-    }
-    else if (chartnumber==2){
-        charttype="SM";
-        color="#007a10";
-        seriesname="Soil Moisture Storage";
-    }
-    else if (chartnumber==3){
-        charttype="GW"
-        color="#88523f";
-        seriesname="Groundwater Storage";
-    };
+    charttype="Total";
+    color="#2f7ed8";
+    seriesname= storage_name+'('+signal_name+')';
 
-    charturl="http://localhost:7000/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+".nc.ascii?";
+//    else if (chartnumber==1){
+//        charttype="SW";
+//        color="#2f7ed8";
+//        seriesname="Surface Water Storage";
+//    }
+//    else if (chartnumber==2){
+//        charttype="SM";
+//        color="#2f7ed8";
+//        seriesname="Soil Moisture Storage";
+//    }
+//    else if (chartnumber==3){
+//        charttype="jpl_gw"
+//        color="#2f7ed8";
+//        seriesname="Groundwater Storage";
+//    };
+
+    charturl="http://localhost:7000/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+"_ts.nc.ascii?";
 
     //get the data from the charturl for the time and lwe_thickness attributes
       var xhttp = new XMLHttpRequest();
@@ -415,7 +256,82 @@ for (var chartnumber=0;chartnumber<4;chartnumber++)
       }; // for the onreadystatechange
       xhttp.open("GET", charturl, false);
       xhttp.send();
-    }
+//    }
 }
 
+function updateWMS(){
+    map.removeLayer(testTimeLayer);
+    var type=$("#select_legend").find('option:selected').val();
+    var signal_process = $("#select_signal_process").find('option:selected').val();
+    var storage_type = $("#select_storage_type").find('option:selected').val();
+    var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+    var date_value = new Date($("#select_layer").find('option:selected').val());
+    var colormin = $("#col_min").val();
+    var colormax = $("#col_max").val();
+    var opac = $("#opacity_val").val();
 
+    teststyle='boxfill/'+type;
+    testLayer = L.tileLayer.wms(testWMS, {
+        //layers: 'grace',
+        layers:'lwe_thickness',
+        format: 'image/png',
+        transparent: true,
+        opacity:opac,
+        styles: teststyle,
+        colorscalerange:colormin+','+colormax,
+        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
+    });
+    testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
+	    //proxy: proxy,
+	    updateTimeDimension: true,
+    	name: "Liquid Water Equivalent Thickness",
+    	units: "cm",
+    	enableNewMarkers: true
+    });
+
+    testTimeLayer.addTo(map);
+    //add the legend to the map based on the type variable
+    testLegend.onAdd= function(map) {
+        var src=testWMS+"?REQUEST=GetLegendGraphic&LAYER=lwe_thickness&PALETTE="+type+"&COLORSCALERANGE="+colormin+","+colormax;
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML +=
+            '<img src="' + src + '" alt="legend">';
+        return div;
+    };
+    testLegend.addTo(map);
+    map.timeDimension.setCurrentTime(date_value);
+
+};
+
+function getInstructions() {
+    var x = document.getElementById("ts-instructions");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+};
+
+
+$(function(){
+    init_vars();
+    updateWMS();
+
+    $("#select_signal_process").change(function(){
+        updateWMS();
+        addGraph();
+    }).change();
+
+    $("#select_storage_type").change(function(){
+        updateWMS();
+        addGraph();
+    }).change;
+
+    $("#select_layer").change(function(){
+        updateWMS();
+    }).change();
+
+    $("#select_legend").change(function(){
+        updateWMS();
+    }).change();
+});

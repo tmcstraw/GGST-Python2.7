@@ -72,11 +72,10 @@ def global_map(request):
                                       initial=['Total Water Storage (GRACE)']
                                       )
 
-    select_legend = SelectInput(display_text='Select Symbology',
+    select_legend = SelectInput(display_text='Select Symbology:  ',
                                       name='select_legend',
                                       multiple=False,
                                       options=[('Grace',"grace"),
-                                               ('Blue-red',"bluered"),
                                                ('Red-blue', "redblue"),
                                                ('Rainbow', "rainbow"),
                                                ('Occam', "occam"),
@@ -91,11 +90,13 @@ def global_map(request):
                                       initial=['']
                                       )
 
+
     context = {
         "select_storage_type":select_storage_type,
         "select_legend":select_legend,
         'select_layer':select_layer,
-        "select_signal_process":select_signal_process
+        "select_signal_process":select_signal_process,
+
     }
 
     return render(request, 'newgrace/global_map.html', context)
@@ -124,14 +125,15 @@ def region(request):
 
     for reg in regions:
         region_list.append(("%s" % (reg.display_name), reg.id))
-
+    lower_name=display_name.lower()
     session.close()
 
     if region_list:
-        select_region = SelectInput(display_text='Select a Region',
+        select_region = SelectInput(display_text='Switch Region:',
                                     name='region-select',
                                     multiple=False,
-                                    options=[('California','california'),('Bangladesh','bangladesh')],
+                                    options=region_list,
+                                    initial=display_name,
                                     )
     else:
         select_region = None
@@ -150,6 +152,7 @@ def region(request):
                                name='select_layer',
                                multiple=False,
                                options=grace_layer_options, )
+
     select_storage_type = SelectInput(display_text='Select Storage Component',
                                       name='select_storage_type',
                                       multiple=False,
@@ -159,7 +162,7 @@ def region(request):
                                                ('Groundwater Storage (Calculated)',"gw")],
                                       initial=['Total Water Storage (GRACE)']
                                       )
-    select_legend = SelectInput(display_text='Select Symbology',
+    select_legend = SelectInput(display_text='Select Symbology:',
                                       name='select_legend',
                                       multiple=False,
                                       options=[('Grace',"grace"),('Blue-red',"bluered"),('Red-blue', "redblue"), ('Rainbow',
@@ -194,9 +197,10 @@ def region(request):
                "bbox":bbox,
                "map_center":map_center,
                "select_signal_process":select_signal_process,
-                "select_storage_type":select_storage_type,
-                "select_legend":select_legend,
-                "select_region":select_region
+               "select_storage_type":select_storage_type,
+               "select_legend":select_legend,
+               "select_region":select_region,
+               "lower_name":lower_name
     }
 
     return render(request, 'newgrace/region.html', context)

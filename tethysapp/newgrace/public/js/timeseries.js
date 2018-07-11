@@ -24,21 +24,36 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
         this._circleLabelMarkers = [];
     },
 
+
     onAdd: function(map) {
         if (this._enableNewMarkers && this._enabledNewMarkers === undefined) {
+            var mk_point = $("#btn-place-point");
+
+            mk_point.on('click', (function() {
             this._enabledNewMarkers = true;
+
+            }));
+
+
             map.doubleClickZoom.disable();
-            map.on('dblclick', (function(e) {
-                // e.originalEvent.preventDefault();
+            map.once('dblclick', (function(e) {
+
+
+
+            e.originalEvent.preventDefault();
+
 
                 // option to remove chart for each new point clicked
-          if ($("#select_storage_type").find('option:selected').val()=="http://localhost:8080/thredds/wms/testAll/grace/GRC_tot.25scaled.nc"){
+//          if ($("#select_storage_type").find('option:selected').val()=="http://localhost:8080/thredds/wms/testAll/grace/GRC_tot.25scaled.nc"){
 
-                if (this._chart){
+            if (this._chart){
                     this._chart.destroy();
                     delete this._chart;
-                }
-          }
+            }
+
+
+
+
 
                 // end option
 
@@ -46,13 +61,17 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
                     position: [e.latlng.lat, e.latlng.lng]
                 });
                 return false;
-            }).bind(this));
+
+             }).bind(this));
+
         }
+
 	this._timeDimension = map.timeDimension;
         this._setDateRanges(); //I added this line
         if (this._dateRange !== undefined) {
             this._addMarkers();
         }
+
         return L.TimeDimension.Layer.WMS.prototype.onAdd.call(this, map);
     },
 
@@ -97,14 +116,26 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
         if (!this._map) {
             return;
         }
+
         var color = this._getNextMarkerColor();
+
+
         var circle = L.circleMarker([point.position[0], point.position[1]], {
             color: '#FFFFFF',
             fillColor: color,
             fillOpacity: 0.8,
             radius: 5,
             weight: 2
-        }).addTo(this._map);
+        });
+
+
+            circle.addTo(this._map);
+
+
+        circle.addTo(this._map);
+
+        var get_ts = $("#btn-get-plot");
+        get_ts.on('click',(function() {
 
         var afterLoadData = function(color, data) {
             var serie = this._showData(color, data, point.name);
@@ -113,6 +144,7 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
                 dataLayer: this._currentLayer,
                 proxy: this._proxy
             })
+
             this._circleLabelMarkers.push(marker);
             marker.addTo(this._map);
             if (this._chart) {
@@ -123,7 +155,7 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
             this._chart.showLoading();
         }
         // display all four variables on the time series plot if the Total Water Storage is selected
-        if(this._baseLayer.getURL()=="http://localhost:8080/thredds/wms/testAll/grace/GRC_tot.25scaled.nc"){
+        if(this._baseLayer.getURL()=="http://localhost:7000/thredds/wms/testAll/grace/GRC_tot.25scaled.nc"){
             this._loadData(circle.getLatLng(),1, afterLoadData.bind(this, "#000099")); //total
             this._loadData(circle.getLatLng(),2, afterLoadData.bind(this, "#02f2ff")); //surface
             this._loadData(circle.getLatLng(),3, afterLoadData.bind(this, "#007a10")); //soil moisture
@@ -132,6 +164,7 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
         else{
         this._loadData(circle.getLatLng(),0, afterLoadData.bind(this, color)); //regular
         }
+        }).bind(this));
 
 
     },
@@ -146,19 +179,19 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
 	    }
 	    if(doall==1){
 	    //total water
-	        var url="http://localhost:8080/thredds/wms/testAll/grace/GRC_tot.25scaled.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	        var url="http://localhost:7000/thredds/wms/testAll/grace/GRC_jpl_tot.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
 	    }
 	    if(doall==2){
 	    //surface water
-	        var url="http://localhost:8080/thredds/wms/testAll/grace/GRC_SW.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	        var url="http://localhost:7000/thredds/wms/testAll/grace/GRC_jpl_sw.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
 	        }
 	    if(doall==3){
 	        //soil moisture
-	        var url="http://localhost:8080/thredds/wms/testAll/grace/GRC_Soil_Moisture_Total_Anomaly.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	        var url="http://localhost:7000/thredds/wms/testAll/grace/GRC_jpl_soil.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
 	    }
 	    if(doall==4){
 	        //groundwater
-	        var url="http://localhost:8080/thredds/wms/testAll/grace/GRC_gwtest.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
+	        var url="http://localhost:7000/thredds/wms/testAll/grace/GRC_jpl_gw.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=CRS:84";
 	        }
         url = url + '&LAYER=' + this._baseLayer.options.layers;
         url = url + '&QUERY_LAYERS=' + this._baseLayer.options.layers;
@@ -526,3 +559,6 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
 L.timeDimension.layer.wms.timeseries = function(layer, options) {
     return new L.TimeDimension.Layer.WMS.TimeSeries(layer, options);
 };
+
+
+

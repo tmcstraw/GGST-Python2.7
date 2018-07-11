@@ -41,7 +41,7 @@ def get_global_dates():
 
         end_date = date_str + timedelta(days=float(v))  # Actual human readable date of the timestep
 
-        ts_file_name = end_date.strftime("%Y_%m_%d")  # Changing the date string format
+        ts_file_name = end_date.strftime("%Y-%m-%d")  # Changing the date string format
         ts_display = end_date.strftime("%Y %B %d")
         grace_layer_options.append([ts_display,ts_file_name])
 

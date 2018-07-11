@@ -45,33 +45,45 @@
                         <p><b>Click the "Select a Region" dropdown and select an option</b></p>
                         <p><b>Or simply select the Global Map tab from the navigation pane</b></p>
                     </li>
+                    <li class="welcome-step">View different storage types
+                        <p><b>You have four options to choose from:</b></p>
+                        <ul>
+                            <li class="welcome-substep1">Total Water Storage Anomaly(GRACE Data), Surface Water Storage Anomaly(derived from GLDAS Model), Soil Moisture Storage Anomaly(derived from GLDAS Model), Groundwater Storage Anomaly(Calculated/inferred using previously mentioned storage types).
+                        </ul>
+                    </li>
+                    <li class="welcome-step">View different signal solutions
+                        <p><b>You have four options to choose from:</b></p>
+                        <ul>
+                            <li class="welcome-substep1">JPL, CSR, GFZ, or an ensemble average of the three previously mentioned solutions.
+                            <li class="welcome-substep1">Studies have shown that each of these solutions may prove to be more accurate in different locations in the world.  A citation of articles may be provided in the future for reference.
+                        </ul>
+                    </li>
                     <li class="welcome-step">View different timesteps
                         <p><b>You have two options to choose from:</b></p>
                         <ul>
-                            <li class="welcome-substep1">Move the slider above the map
+                            <li class="welcome-substep1">Move the slider in the lower left-hand corner of the map
                             <li class="welcome-substep1">Select a date from the dropdown on the left
                         </ul>
                     </li>
-                    <li class="welcome-step">View grid value
-                        <p><b>Please make sure that map interaction is set to none</b></p>
-                        <ul>
-                            <li class="welcome-substep1">Simply click on the map. It should show a popup with the value.
-                        </ul>
-                        <p>Note: If you don't see a value it means that you are cliking outside the actual data bounds.</p>
-                    </li>
                     <li class="welcome-step">View Animation
                         <ul>
-                            <li class="welcome-substep1">Use the animation controls to the left of the slider to start or stop animation
-                            <li class="welcome-substep1">Use the Forward and Reverse buttons to increase and decrease animation speed
+                            <li class="welcome-substep1">Use the animation controls in the lower left-hand corner of the map to start or stop animation
+                            <li class="welcome-substep1">Use the fps slider on the right side of the control bar to increase and decrease animation speed
+                        </ul>
+                    </li>
+                    <li class="welcome-step">Contour/Map Settings
+                        <ul>
+                            <li class="welcome-substep1">Use the Select symbology dropdown to view different color schemes for the map contours.
+                            <li class="welcome-substep1">Use the Max and Min toggles in the top left corner of the page to adjust the contour values.  The opacity toggle allows you to adjust the transparency of the map data layer
                         </ul>
                     </li>
                     <li class="welcome-step">View Time Series
-                        <p><b>Select the point option from the map interaction dropdown:</b></p>
+                        <p><b>Double Click on a location on the map that you desire to extract the time series for:</b></p>
                         <ul>
-                            <li class="welcome-substep1">Click within the region and then click on Show Plot
+                            <li class="welcome-substep1">Click within the data region and then click on Show Plot on the left-hand side of the page
                             <li class="welcome-substep1">The Time Series for that point will be shown below the map
                         </ul>
-                        <p>Note:For Global Map map check if the point you clicked has any data before clicking on show plot. Click on the map when the Map Interaction is set to none, if you don't see a popup it means that you are clicking outside the bounds.</p>
+                        <p>Note: You can also click anywhere on the time series graph to change the layer shown on the map to a specific time.  The time series can be exported in a number of formats by clicking the menu button on the chart(top-right).</p>
                     </li>
                     <li class="welcome-step">Click 'Exit' in the top-right of the app to return to the Main Apps Library</li>
                     <p>External Resources and Links:</p>
@@ -96,7 +108,7 @@
     </div>
     <!--End modal content-->
 </div>
-</div>
+
 
 <!-- API Modal -->
 <div class="modal fade" id="api-modal" tabindex="-1" role="dialog" aria-labelledby="api-modal-label">
@@ -160,7 +172,7 @@
                     <tr>
                         <td>storage_type</td>
                         <td>Storage type you wish to access</td>
-                        <td>Use one of the following: (tot_, sw_, soil, gw_)</td>
+                        <td>Use one of the following: (tot, sw, soil, gw)</td>
                         <td>Yes</td>
                     </tr>
                     <tr>
@@ -178,8 +190,8 @@
 
                 </table>
                 <h5>Example:</h5>
-                <a href="{{ host }}/apps/grace/api/GetPointValues/?latitude=20.7&longitude=80.2&signal_solution=csr&storage_type=gw_" target="_blank">
-                    <code>{{ host }}/apps/grace/api/GetPointValues/?latitude=20.7&longitude=80.2&signal_solution=csr&storage_type=gw_</code>
+                <a href="{{ host }}/apps/newgrace/api/GetPointValues/?latitude=20.7&longitude=80.2&signal_solution=csr&storage_type=gw" target="_blank">
+                    <code>{{ host }}/apps/newgrace/api/GetPointValues/?latitude=20.7&longitude=80.2&signal_solution=csr&storage_type=gw</code>
                 </a>
             </div>
             <div class="modal-footer">
