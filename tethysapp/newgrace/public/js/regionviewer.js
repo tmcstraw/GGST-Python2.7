@@ -48,7 +48,7 @@ var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
 
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
-var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+var testWMS = "http://128.187.106.141:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
 var colormin = $("#col_min").val();
 var colormax = $("#col_max").val();
 var opac = $("#opacity_val").val();
@@ -187,7 +187,7 @@ function addGraph(){
 //        seriesname="Groundwater Storage";
 //    };
 
-    charturl="http://localhost:7000/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+"_ts.nc.ascii?";
+    charturl="http://128.187.106.141:7000/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+"_ts.nc.ascii?";
 
     //get the data from the charturl for the time and lwe_thickness attributes
       var xhttp = new XMLHttpRequest();
@@ -264,7 +264,7 @@ function updateWMS(){
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS = "http://localhost:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+    var testWMS = "http://128.187.106.141:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
     var date_value = new Date($("#select_layer").find('option:selected').val());
     var colormin = $("#col_min").val();
     var colormax = $("#col_max").val();
