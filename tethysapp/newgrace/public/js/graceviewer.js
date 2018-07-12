@@ -28,7 +28,7 @@ var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
 //var date_value = $("#select_layer").find('option:selected').val();
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
-var testWMS="http://128.187.106.141:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+var testWMS="https://tethys.byu.edu:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
 var testLayer = L.tileLayer.wms(testWMS, {
     layers: 'grace',
     layers:'lwe_thickness',
@@ -61,7 +61,7 @@ function updateWMS(){
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS="http://128.187.106.141:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+    var testWMS="https://tethys.byu.edu:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
     var date_value = new Date($("#select_layer").find('option:selected').val());
     var colormin = $("#col_min").val();
     var colormax = $("#col_max").val();

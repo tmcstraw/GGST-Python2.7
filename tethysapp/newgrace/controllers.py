@@ -52,8 +52,8 @@ def global_map(request):
     select_signal_process = SelectInput(display_text='Select Signal Processing Method',
                                     name = 'select_signal_process',
                                     multiple=False,
-                                    options= [('JPL Solution', "jpl"), ('CSR Solution', "csr"), ('GFZ Solution', "gfz"), ('Ensemble Avg of JPL, CSR, & GFZ', "avg")],
-                                    initial=['JPL Solution']
+                                    options= [('CSR Solution', "csr"), ('JPL Solution', "jpl"), ('GFZ Solution', "gfz"), ('Ensemble Avg of JPL, CSR, & GFZ', "avg")],
+                                    initial=['CSR Solution']
                                     )
 
     select_layer = SelectInput(display_text='Select a day',

@@ -41,7 +41,6 @@ def subset2(shapefile,region_name,GLOBAL_DIR,display_name,thredds_id):
         # Convert Polygon to netcdf file format and subset netcdf files to region
         os.system(SHELL_DIR+'grace2subset.sh '+region_name+' '+GLOBAL_DIR+' '+pol_name+' '+pol_shp)
 
-
         # *******************************************************************************
         # Read polygon shapefile
         # *******************************************************************************
