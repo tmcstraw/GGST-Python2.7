@@ -5,7 +5,7 @@ from .app import *
 from model import *
 from utilities import *
 
-@login_required()
+# @login_required()
 def home(request):
     """
     Controller for the app home page.
@@ -39,7 +39,7 @@ def api(request):
 
     return render(request, 'grace/api.html', context)
 
-@login_required()
+# @login_required()
 def global_map(request):
     """
     Controller for the app home page.
@@ -72,28 +72,9 @@ def global_map(request):
                                       initial=['Total Water Storage (GRACE)']
                                       )
 
-    select_legend = SelectInput(display_text='Select Symbology:  ',
-                                      name='select_legend',
-                                      multiple=False,
-                                      options=[('Grace',"grace"),
-                                               ('Red-blue', "redblue"),
-                                               ('Rainbow', "rainbow"),
-                                               ('Occam', "occam"),
-                                               ('ncview',"ncview"),
-                                               ('sst_36',"sst_36"),
-                                               ('greyscale', "greyscale"),
-                                               ('alg2', "alg2"),
-                                               ('occam_pastel-30', "occam_pastel-30"),
-                                               ('alg', "alg"),
-                                               ('ferret', "ferret")
-                                               ],
-                                      initial=['']
-                                      )
-
 
     context = {
         "select_storage_type":select_storage_type,
-        "select_legend":select_legend,
         'select_layer':select_layer,
         "select_signal_process":select_signal_process,
 
@@ -101,7 +82,7 @@ def global_map(request):
 
     return render(request, 'newgrace/global_map.html', context)
 
-@login_required()
+# @login_required()
 def region(request):
     """
     Controller for the app home page.
@@ -145,7 +126,7 @@ def region(request):
                                     name = 'select_signal_process',
                                     multiple=False,
                                     options= [('JPL Solution', "jpl"), ('CSR Solution', "csr"), ('GFZ Solution', "gfz"), ('Ensemble Avg of JPL, CSR, & GFZ', "avg")],
-                                    initial=['JPL Solution']
+                                    initial=['CSR Solution']
                                     )
 
     select_layer = SelectInput(display_text='Select a day',
@@ -161,26 +142,6 @@ def region(request):
                                                ('Soil Moisture Storage (GLDAS)',"soil"),
                                                ('Groundwater Storage (Calculated)',"gw")],
                                       initial=['Total Water Storage (GRACE)']
-                                      )
-    select_legend = SelectInput(display_text='Select Symbology:',
-                                      name='select_legend',
-                                      multiple=False,
-                                      options=[('Grace',"grace"),('Blue-red',"bluered"),('Red-blue', "redblue"), ('Rainbow',
-                                                          "rainbow"),
-                                               (
-                                                   'Occam',
-                                                   "occam"), (
-                                                   'ncview',
-                                                   "ncview"),
-                                               ('sst_36',
-                                                "sst_36"),
-                                               ('greyscale',"greyscale"),
-                                               ('alg2',"alg2"),
-                                               ('occam_pastel-30',"occam_pastel-30"),
-                                               ('alg',"alg"),
-                                               ('ferret',"ferret")
-                                               ],
-                                      initial=['']
                                       )
 
 
@@ -198,7 +159,6 @@ def region(request):
                "map_center":map_center,
                "select_signal_process":select_signal_process,
                "select_storage_type":select_storage_type,
-               "select_legend":select_legend,
                "select_region":select_region,
                "lower_name":lower_name
     }

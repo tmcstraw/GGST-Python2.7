@@ -18,11 +18,67 @@ from utilities import *
 
 
 
-# def plot_region_jpl_tot(request):
-#     get_plot_ts(GLOBAL_NETCDF_DIR,'jpl','tot')
-#
-#     return JsonResponse(return_obj)
+def get_plot_global_jpl_tot(request):
 
+    return_obj = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        # Get the point/polygon/shapefile coordinates along with the selected variable
+        pt_coords = request.POST['point-lat-lon']
+        storage_type = request.POST['storage_type']
+        signal_solution = request.POST['signal_solution']
+
+        GLOBAL_DIR = os.path.join(GLOBAL_NETCDF_DIR, '')
+
+
+
+        gbyos_grc_ncf = GLOBAL_DIR + 'GRC_'+signal_solution+'_'+storage_type+'.nc'
+
+
+
+        graph = get_global_plot(pt_coords,gbyos_grc_ncf)
+        graph = json.loads(graph)
+        return_obj["values"] = graph["values"]
+        return_obj["location"] = graph["point"]
+
+
+        return_obj['success'] = "success"
+
+    return JsonResponse(return_obj)
+
+def plot_region_jpl_gw(request):
+    return_obj = {}
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_id = info.get('region-info')
+        pt_coords = request.POST['point-lat-lon']
+        storage_type = request.POST['storage_type']
+        signal_solution = request.POST['signal_solution']
+
+        Session = Grace.get_persistent_store_database('main_db', as_sessionmaker=True)
+        session = Session()
+
+        region = session.query(Region).get(region_id)
+        display_name = region.display_name
+        region_store = ''.join(display_name.split()).lower()
+
+        FILE_DIR = os.path.join(JPL_GW_NETCDF_DIR, '')
+
+        region_dir = os.path.join(FILE_DIR + region_store, '')
+
+        nc_file = os.path.join(region_dir+region_store+"_"+signal_solution+"_"+storage_type+".nc")
+
+        if pt_coords:
+            graph = get_pt_region(pt_coords,nc_file)
+            graph = json.loads(graph)
+            return_obj["values"] = graph["values"]
+            return_obj["location"] = graph["point"]
+
+        return_obj["success"] = "success"
+
+
+    return JsonResponse(return_obj)
 
 
 @user_passes_test(user_permission_test)

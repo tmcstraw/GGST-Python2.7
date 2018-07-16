@@ -122,7 +122,7 @@ ncwa -O -v lwe_thickness -a lat,lon $1$soil testsoilstp.nc
 ncap2 -A -s "where(lwe_thickness>-99998)lwe_thickness=1" $1$soil tmpsoil.nc
 ncbo -O -y mlt tmpsoil.nc AvgSoil.nc AvgSoil.nc
 ncdiff -O testsoilstp.nc AvgSoil.nc $1$soil
-ncwa -O -v lwe_thickness -a lat,lon $1$soilts $1$soilts
+ncwa -O -v lwe_thickness -a lat,lon $1$soil $1$soilts
 
 
 rm tmpsoil.nc

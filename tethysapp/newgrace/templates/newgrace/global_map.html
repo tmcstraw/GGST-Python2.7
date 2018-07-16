@@ -20,9 +20,53 @@
     <head>
         <title>GRACE Data Viewer</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css" />
+        <!--<link href="{% static 'newgrace/js/leaflet/src/leaflet.draw.css' %}" rel="stylesheet"/>-->
         <link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.4.2/Control.FullScreen.min.js"></script>
+
+
+        <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/Leaflet.Draw.Event.js' %}"></script>-->
+
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/edit/handler/Edit.Poly.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/edit/handler/Edit.SimpleShape.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/edit/handler/Edit.Rectangle.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/edit/handler/Edit.Marker.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/edit/handler/Edit.CircleMarker.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/edit/handler/Edit.Circle.js' %}"></script>-->
+
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/Control.Draw.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/Toolbar.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/Tooltip.js' %}"></script>-->
+
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/draw/handler/Draw.Feature.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/draw/handler/Draw.Polyline.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/draw/handler/Draw.Polygon.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/draw/handler/Draw.SimpleShape.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/draw/handler/Draw.Rectangle.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/draw/handler/Draw.Circle.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/draw/handler/Draw.Marker.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/draw/handler/Draw.CircleMarker.js' %}"></script>-->
+
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/ext/TouchEvents.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/ext/LatLngUtil.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/ext/GeometryUtil.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/ext/LineUtil.Intersect.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/ext/Polyline.Intersect.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/ext/Polygon.Intersect.js' %}"></script>-->
+
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/draw/DrawToolbar.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/edit/EditToolbar.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/edit/handler/EditToolbar.Edit.js' %}"></script>-->
+        <!--<script type="text/javascript" src="{% static 'newgrace/js/leaflet/src/edit/handler/EditToolbar.Delete.js' %}"></script>-->
+
     </head>
     <body>
+    <script>window.onbeforeunload = null;</script>
+
         <span class="leg_min_max" style="white-space:nowrap; float:right;">
 
                 Min:
@@ -32,10 +76,26 @@
                 Opacity:
                     <input type="number" name="opacity" id="opacity_val" min="0.1" max="1" step="0.1" value="0.7" onchange=updateWMS()>
         </span>
-        <span class="legend_options" style="width:10%; white-space:nowrap; float:right; margin-right:11%;">
-
-            {% gizmo select_input select_legend %}</span>
+        <span class="legend_options" style="width:10%; white-space:nowrap; float:right; margin-right:5px;">
+                <span>
+                    <select onchange=updateWMS() id="select_legend">
+                        <option value="grace">Grace</option>
+                        <option value="redblue">Red-blue</option>
+                        <option value="rainbow">Rainbow</option>
+                        <option value="occam">Occam</option>
+                        <option value="ncview">ncview</option>
+                        <option value="sst_36">sst_36</option>
+                        <option value="greyscale">greyscale</option>
+                        <option value="alg2">alg2</option>
+                        <option value="occam_pastel-30">occam_pastel-30</option>
+                        <option value="alg">alg</option>
+                        <option value="ferret">ferret</option>
+                    </select>
+                </span>
+        </span>
+    <span style="white-space:nowrap; float:right; margin-right:5px;">Select Symbology:  </span>
         <div id="map" style="height: 500px; width: 100%"></div>
+
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.4.2/Control.FullScreen.min.js"></script>
         <script type="text/javascript" src="https://cdn.rawgit.com/nezasa/iso8601-js-period/master/iso8601.min.js"></script>
@@ -45,6 +105,8 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
         <script type="text/javascript" src="https://cdn.rawgit.com/nezasa/iso8601-js-period/master/iso8601.min.js"></script>
         <script type="text/javascript" src="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.min.js"></script>
+
+
 	<script type="text/javascript" src="{% static 'newgrace/js/circlelabelmarker.js' %}"></script>
 	<script type="text/javascript" src="{% static 'newgrace/js/timeseries.js' %}"></script>
     <script type="text/javascript" src="{% static 'newgrace/js/graceviewer.js' %}"></script>
@@ -250,10 +312,10 @@
     <span style="white-space:nowrap; float:left; margin-left:2%; color:blue; cursor:pointer;" id= info-button onclick=getInstructions() class="glyphicon glyphicon-info-sign"></span>
     <br>
     <div id= "ts-instructions" class="time-series-instructions" style="display:none;">
-        <br><p>To generate a time series for a specific location, click the <b>"Select Location"</b> button, click on the desired location on the map, and then click the <b>"Show Plot"</b> button</p>
+        <br><p>To generate a time series for a specific location, <b>double click</b> the map on a point of interest.  The chart generated below the map will only display the last location you selected.  To clear the map of points, click the <b>"Clear Points"</b> button</p>
     </div>
-    <button type="button" id="btn-place-point" name="btn-place-point" class="btn btn-default">Select Location</button>
-    <button type="button" id="btn-get-plot" name="btn-get-plot" class="btn btn-default">Show Plot</button>
+<br>
+    <button style="float:left;" type="button" id="btn-clear-points" name="btn-clear-points" onclick=updateWMS() class="btn btn-default">Clear Points</button>
 
 
 {% endblock %}

@@ -1,4 +1,6 @@
 var init_vars
+var point_grp = L.layerGroup();
+
 
 
 init_vars = function(){
@@ -48,7 +50,7 @@ var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
 
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
-var testWMS = "https://tethys.byu.edu:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+var testWMS = "http://127.0.0.1:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
 var colormin = $("#col_min").val();
 var colormax = $("#col_max").val();
 var opac = $("#opacity_val").val();
@@ -70,6 +72,25 @@ var testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
     units: "cm",
     enableNewMarkers: true
 });
+
+var testconstyle='contour/sst_36';
+var testContourLayer = L.tileLayer.wms(testWMS, {
+        //layers: 'grace',
+        layers:'lwe_thickness',
+        format: 'image/png',
+        transparent: true,
+        opacity:0.7,
+        styles: testconstyle,
+        colorscalerange:colormin+','+colormax,
+        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
+    });
+var testTimeConLayer = L.timeDimension.layer.wms.timeseries(testContourLayer, {
+	    //proxy: proxy,
+	    updateTimeDimension: true,
+    	name: "Liquid Water Equivalent Thickness",
+    	units: "cm",
+    	enableNewMarkers: true
+    });
 
 var testLegend = L.control({
     position: 'topright'
@@ -98,7 +119,7 @@ function addGraph(){
     var signal_name = $("#select_signal_process").find('option:selected').text();
     var storage_name = $("#select_storage_type").find('option:selected').text();
 
-    mychart=Highcharts.stockChart('chart', {
+    mychart=Highcharts.stockChart('regchart', {
             legend: {
                     enabled: true
             },
@@ -187,7 +208,7 @@ function addGraph(){
 //        seriesname="Groundwater Storage";
 //    };
 
-    charturl="https://tethys.byu.edu:7000/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+"_ts.nc.ascii?";
+    charturl="http://127.0.0.1:7000/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+"_ts.nc.ascii?";
 
     //get the data from the charturl for the time and lwe_thickness attributes
       var xhttp = new XMLHttpRequest();
@@ -261,10 +282,11 @@ function addGraph(){
 
 function updateWMS(){
     map.removeLayer(testTimeLayer);
+    map.removeLayer(testTimeConLayer);
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS = "https://tethys.byu.edu:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+    var testWMS = "http://127.0.0.1:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
     var date_value = new Date($("#select_layer").find('option:selected').val());
     var colormin = $("#col_min").val();
     var colormax = $("#col_max").val();
@@ -281,6 +303,25 @@ function updateWMS(){
         colorscalerange:colormin+','+colormax,
         attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
     });
+
+    testconstyle='contour/'+type;
+    testContourLayer = L.tileLayer.wms(testWMS, {
+        //layers: 'grace',
+        layers:'lwe_thickness',
+        format: 'image/png',
+        transparent: true,
+        opacity:0.7,
+        styles: testconstyle,
+        colorscalerange:colormin+','+colormax,
+        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
+    });
+    testTimeConLayer = L.timeDimension.layer.wms.timeseries(testContourLayer, {
+	    //proxy: proxy,
+	    updateTimeDimension: true,
+    	name: "Liquid Water Equivalent Thickness",
+    	units: "cm",
+    	enableNewMarkers: true
+    });
     testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
 	    //proxy: proxy,
 	    updateTimeDimension: true,
@@ -290,6 +331,7 @@ function updateWMS(){
     });
 
     testTimeLayer.addTo(map);
+    testTimeConLayer.addTo(map);
     //add the legend to the map based on the type variable
     testLegend.onAdd= function(map) {
         var src=testWMS+"?REQUEST=GetLegendGraphic&LAYER=lwe_thickness&PALETTE="+type+"&COLORSCALERANGE="+colormin+","+colormax;
@@ -311,6 +353,32 @@ function getInstructions() {
         x.style.display = "none";
     }
 };
+
+
+
+$(function(){
+    updateWMS();
+
+    $("#select_signal_process").change(function(){
+        updateWMS();
+    }).change();
+
+    $("#select_storage_type").change(function(){
+        updateWMS();
+    }).change;
+
+    $("#select_layer").change(function(){
+        updateWMS();
+    }).change();
+
+    $("#select_legend").change(function(){
+        updateWMS();
+    }).change;
+
+});
+
+
+
 
 
 $(function(){
