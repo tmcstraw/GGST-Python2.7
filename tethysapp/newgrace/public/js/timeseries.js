@@ -28,7 +28,7 @@ L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
 //        if (this._enableNewMarkers && this._enabledNewMarkers === undefined) {
 //            this._enabledNewMarkers = true;
 //            map.doubleClickZoom.disable();
-//            map.once('dblclick', (function(e) {
+//            map.on('dblclick', (function(e) {
 //                // e.originalEvent.preventDefault();
 //
 //                // option to remove chart for each new point clicked
