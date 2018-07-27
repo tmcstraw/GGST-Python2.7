@@ -45,6 +45,16 @@ class Newgrace(TethysAppBase):
                 url='add-region',
                 controller='newgrace.controllers.add_region'
             ),
+            UrlMap(
+                name='get-plot-global',
+                url='global-map/get-plot-global',
+                controller='newgrace.ajax_controllers.get_plot_global'
+            ),
+            UrlMap(
+                name='get-plot-reg-pt',
+                url='region/get-plot-reg-pt',
+                controller='newgrace.ajax_controllers.get_plot_reg_pt'
+            ),
             UrlMap(name='add-region-ajax',
                    url='newgrace/add-region/submit',
                    controller='newgrace.ajax_controllers.region_add'

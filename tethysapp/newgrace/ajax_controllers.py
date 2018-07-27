@@ -12,27 +12,49 @@ from model import *
 import requests, urlparse
 import shapely.geometry
 import os
+from .app import *
 from config import *
 from SHAZAAM import *
 from utilities import *
 
 
 
-def get_plot_global_jpl_tot(request):
+def get_plot_global(request):
 
     return_obj = {}
 
     if request.is_ajax() and request.method == 'POST':
         # Get the point/polygon/shapefile coordinates along with the selected variable
-        pt_coords = request.POST['point-lat-lon']
+        pt_coords = request.POST["geom_data"]
         storage_type = request.POST['storage_type']
-        signal_solution = request.POST['signal_solution']
+        signal_process = request.POST['signal_process']
 
         GLOBAL_DIR = os.path.join(GLOBAL_NETCDF_DIR, '')
 
 
+        gbyos_grc_ncf = GLOBAL_DIR + 'GRC_'+signal_process+'_'+storage_type+'.nc'
 
-        gbyos_grc_ncf = GLOBAL_DIR + 'GRC_'+signal_solution+'_'+storage_type+'.nc'
+        # grc_tot_nfc = GLOBAL_DIR + 'GRC_'+signal_process+'_tot.nc'
+        # grc_sw_nfc = GLOBAL_DIR + 'GRC_'+signal_process+'_sw.nc'
+        # grc_soil_nfc = GLOBAL_DIR + 'GRC_'+signal_process+'_soil.nc'
+        # grc_gw_nfc = GLOBAL_DIR + 'GRC_'+signal_process+'_gw.nc'
+        #
+        # graph_tot = get_global_plot(pt_coords,grc_tot_nfc)
+        # graph_tot = json.loads(graph_tot)
+        # return_obj["tot_values"] = graph_tot["values"]
+        # return_obj["location"] = graph_tot["point"]
+        #
+        # graph_sw = get_global_plot(pt_coords,grc_sw_nfc)
+        # graph_sw = json.loads(graph_sw)
+        # return_obj["sw_values"] = graph_sw["values"]
+        #
+        # graph_soil = get_global_plot(pt_coords,grc_soil_nfc)
+        # graph_soil = json.loads(graph_soil)
+        # return_obj["soil_values"] = graph_soil["values"]
+        #
+        # graph_gw = get_global_plot(pt_coords,grc_gw_nfc)
+        # graph_gw = json.loads(graph_gw)
+        # return_obj["gw_values"] = graph_gw["values"]
 
 
 
@@ -46,24 +68,26 @@ def get_plot_global_jpl_tot(request):
 
     return JsonResponse(return_obj)
 
-def plot_region_jpl_gw(request):
+def get_plot_reg_pt(request):
     return_obj = {}
     if request.is_ajax() and request.method == 'POST':
         info = request.POST
 
-        region_id = info.get('region-info')
-        pt_coords = request.POST['point-lat-lon']
+        display_name = request.POST['region_dis_name']
+        pt_coords = request.POST['geom_data']
         storage_type = request.POST['storage_type']
-        signal_solution = request.POST['signal_solution']
+        signal_solution = request.POST['signal_process']
 
-        Session = Grace.get_persistent_store_database('main_db', as_sessionmaker=True)
-        session = Session()
+        # Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        # session = Session()
 
-        region = session.query(Region).get(region_id)
-        display_name = region.display_name
+        # region = session.query(Region).get(region_id)
+        # display_name = region.display_name
         region_store = ''.join(display_name.split()).lower()
 
-        FILE_DIR = os.path.join(JPL_GW_NETCDF_DIR, '')
+        GLOBAL_DIR = os.path.join(GLOBAL_NETCDF_DIR, '')
+
+        FILE_DIR = os.path.join(GLOBAL_DIR, '')
 
         region_dir = os.path.join(FILE_DIR + region_store, '')
 

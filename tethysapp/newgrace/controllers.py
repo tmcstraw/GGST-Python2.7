@@ -106,7 +106,7 @@ def region(request):
 
     for reg in regions:
         region_list.append(("%s" % (reg.display_name), reg.id))
-    lower_name=display_name.lower()
+    lower_name= ''.join(display_name.split()).lower()
     session.close()
 
     if region_list:

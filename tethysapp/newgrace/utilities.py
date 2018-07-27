@@ -9,6 +9,7 @@ import gdal
 import ogr
 import osr
 import requests
+import math
 import json
 import functools
 import shapely.geometry #Need this to find the bounds of a given geometry
@@ -59,9 +60,14 @@ def get_global_plot_api(pt_coords,start_date,end_date,GLOBAL_NC):
     ts_plot = []
 
     nc_file = GLOBAL_NC
+
     coords = pt_coords.split(',')
     stn_lat = float(coords[1])
     stn_lon = float(coords[0])
+    if stn_lon<0.0:
+        stnd_lon = float(stn_lon+360.0)
+    else:
+        stnd_lon = stn_lon
 
     nc_fid = Dataset(nc_file, 'r')
     nc_var = nc_fid.variables  # Get the netCDF variables
@@ -81,7 +87,7 @@ def get_global_plot_api(pt_coords,start_date,end_date,GLOBAL_NC):
 
         data = nc_var['lwe_thickness'][timestep, :, :]
 
-        lon_idx = (np.abs(lon - stn_lon)).argmin()
+        lon_idx = (np.abs(lon - stnd_lon)).argmin()
         lat_idx = (np.abs(lat - stn_lat)).argmin()
 
         value = data[lat_idx, lon_idx]
@@ -94,48 +100,23 @@ def get_global_plot_api(pt_coords,start_date,end_date,GLOBAL_NC):
     graph_json["values"] = ts_plot
     graph_json["point"] = [round(stn_lat, 2), round(stn_lon, 2)]
     graph_json = json.dumps(graph_json)
+
     return graph_json
 
-def get_plot_ts(GLOBAL_DIR,signal_type,storage_type):
-    return_obj = {}
-    if request.is_ajax() and request.method == 'POST':
-        info = request.POST
-
-        region_id = info.get('region-info')
-        pt_coords = request.POST['point-lat-lon']
-
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
-        session = Session()
-
-        region = session.query(Region).get(region_id)
-        display_name = region.display_name
-        region_store = ''.join(display_name.split()).lower()
-
-        FILE_DIR = os.path.join(GLOBAL_DIR, '')
-
-        region_dir = os.path.join(FILE_DIR + region_store, '')
-
-        nc_file = os.path.join(region_dir+region_store+"_"+signal_type+"_"+storage_type+".nc")
-
-        if pt_coords:
-            graph = get_pt_region(pt_coords,nc_file)
-            graph = json.loads(graph)
-            return_obj["values"] = graph["values"]
-            return_obj["location"] = graph["point"]
-
-        return_obj["success"] = "success"
-
-
-    return (return_obj)
 
 def get_pt_region(pt_coords,nc_file):
 
     graph_json = {}
     ts_plot = []
 
+
     coords = pt_coords.split(',')
     stn_lat = float(coords[1])
     stn_lon = float(coords[0])
+    if stn_lon<0.0:
+        stnd_lon = float(stn_lon+360.0)
+    else:
+        stnd_lon = stn_lon
 
     nc_fid = Dataset(nc_file, 'r')
     nc_var = nc_fid.variables  # Get the netCDF variables
@@ -154,7 +135,7 @@ def get_pt_region(pt_coords,nc_file):
 
         data = nc_var['lwe_thickness'][timestep, :, :]
 
-        lon_idx = (np.abs(lon - stn_lon)).argmin()
+        lon_idx = (np.abs(lon - stnd_lon)).argmin()
         lat_idx = (np.abs(lat - stn_lat)).argmin()
 
         value = data[lat_idx, lon_idx]
@@ -181,6 +162,11 @@ def get_global_plot(pt_coords,global_netc):
     coords = pt_coords.split(',')
     stn_lat = float(coords[1])
     stn_lon = float(coords[0])
+    if stn_lon<0.0:
+        stnd_lon = float(stn_lon+360.0)
+    else:
+        stnd_lon = stn_lon
+
 
     nc_fid = Dataset(nc_file, 'r')
     nc_var = nc_fid.variables  # Get the netCDF variables
@@ -199,10 +185,12 @@ def get_global_plot(pt_coords,global_netc):
         end_date = date_str + timedelta(days=float(v))  # Actual human readable date of the timestep
 
         data = nc_var['lwe_thickness'][timestep, :, :]
+        print(data)
+        # if data.any==float('nan'):
+        #     print('its bad')
 
-        lon_idx = (np.abs(lon - stn_lon)).argmin()
+        lon_idx = (np.abs(lon - stnd_lon)).argmin()
         lat_idx = (np.abs(lat - stn_lat)).argmin()
-
         value = data[lat_idx, lon_idx]
 
         time_stamp = calendar.timegm(end_date.utctimetuple()) * 1000
