@@ -18,7 +18,7 @@ L.timeDimension.layer.wms.timeseries = function(layer, options) {
 var map = L.map('map', {
     crs: L.CRS.EPSG4326,
     zoom: 1,
-    maxBounds: L.latLngBounds(L.latLng(-90.0,-180.0), L.latLng(90.0,180.0)),
+    maxBounds: L.latLngBounds(L.latLng(-90.0,-155.0), L.latLng(90.0,180.0)),
     fullscreenControl: true,
     timeDimension: true,
     timeDimensionOptions:{
@@ -61,8 +61,8 @@ var osm_layer = L.tileLayer(
 var baseLayers = {
 		"NASA": wmsLayer,
 		"Natural_Earth":other_map,
-		"test":test_map,
-		"sarva":osm_layer,
+//		"test":test_map,
+//		"sarva":osm_layer,
 	};
 
 
@@ -72,7 +72,7 @@ map.addLayer(drawnItems);
 var drawControlFull = new L.Control.Draw({
             edit: {
                 featureGroup: drawnItems,
-                edit: true,
+                edit: false,
             },
             draw: {
                 polyline: false,
@@ -80,7 +80,7 @@ var drawControlFull = new L.Control.Draw({
                 rectangle:false,
                 circle:false,
                 polygon:false,
-            }
+            },
 });
 
 map.addControl(drawControlFull);
@@ -118,7 +118,7 @@ map.on('fullscreenchange', function() {
 
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
-var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+var testWMS="https://tethys.byu.edu/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
 var testLayer = L.tileLayer.wms(testWMS, {
     layers: 'grace',
     layers:'lwe_thickness',
@@ -152,7 +152,7 @@ function updateWMS(){
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+    var testWMS="https://tethys.byu.edu/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
     var date_value = new Date($("#select_layer").find('option:selected').val());
     var colormin = $("#col_min").val();
     var colormax = $("#col_max").val();
@@ -186,7 +186,7 @@ function updateWMS(){
         var src=testWMS+"?REQUEST=GetLegendGraphic&LAYER=lwe_thickness&PALETTE="+type+"&COLORSCALERANGE="+colormin+","+colormax;
         var div = L.DomUtil.create('div', 'info legend');
         div.innerHTML +=
-            '<img src="' + src + '" alt="legend">';
+            '<img src="' + src + '" alt="legend" style="width:80%; float:right;">';
         return div;
     };
     testLegend.addTo(map);
@@ -280,7 +280,7 @@ get_ts = function(){
                         data:result.values,
                         name: signal_name+' '+storage_name,
                         type: 'area',
-                        visible: false,
+                        visible: true,
                         tooltip: {
                             valueDecimals: 2,
                             valueSuffix: 'cm',
@@ -374,7 +374,7 @@ get_ts = function(){
                 else if (storage_type = "gw"){
                     gw_series.show() }
                 };
-                updateChart();
+            //    updateChart();
 
 
 

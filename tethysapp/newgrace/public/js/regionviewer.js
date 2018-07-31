@@ -79,10 +79,12 @@ var drawControlFull = new L.Control.Draw({
             },
             draw: {
                 polyline: false,
-                circlemarker:false,
+                circlemarker: false,
                 rectangle:false,
                 circle:false,
+		marker: true,
                 polygon:false,
+		
             }
 });
 
@@ -110,7 +112,7 @@ map.on("draw:created", function (e) {
 
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
-var testWMS = "http://127.0.0.1:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+var testWMS = "https://tethys.byu.edu/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
 var colormin = $("#col_min").val();
 var colormax = $("#col_max").val();
 var opac = $("#opacity_val").val();
@@ -193,7 +195,10 @@ function addGraph(){
                         value: new Date(map.timeDimension.getCurrentTime()),
                         width: 2,
                         id: 'pbCurrentTime'
-                    }]
+                    }],
+		    title: {
+			text: 'Date'
+		    },
             },
             yAxis: {
                     title: {
@@ -245,7 +250,7 @@ function addGraph(){
     var charttype;
     var seriesname;
     charttype="Total";
-    color="#2f7ed8";
+    color="#053372";
     seriesname= signal_name+' '+storage_name;
 
 //    else if (chartnumber==1){
@@ -264,7 +269,7 @@ function addGraph(){
 //        seriesname="Groundwater Storage";
 //    };
 
-    charturl="http://127.0.0.1:7000/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+"_ts.nc.ascii?";
+    charturl="https://tethys.byu.edu/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+"_ts.nc.ascii?";
 
     //get the data from the charturl for the time and lwe_thickness attributes
       var xhttp = new XMLHttpRequest();
@@ -415,6 +420,7 @@ get_ts = function(){
                         data:result.values,
                         name: signal_name+' '+storage_name,
                         type: 'area',
+//			color: '#2f7ed8',
                         tooltip: {
                             valueDecimals: 2,
                             valueSuffix: 'cm',
@@ -479,7 +485,7 @@ function updateWMS(){
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS = "http://127.0.0.1:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+    var testWMS = "https://tethys.byu.edu/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
     var date_value = new Date($("#select_layer").find('option:selected').val());
     var colormin = $("#col_min").val();
     var colormax = $("#col_max").val();
