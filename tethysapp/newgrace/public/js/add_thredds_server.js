@@ -65,25 +65,25 @@ var GRACE_ADD_GEOSERVER = (function() {
         var thredds_server_password = $("#thredds-password-input").val();
 
         if(thredds_server_name == ""){
-            addErrorMessage("Geoserver Name cannot be empty!");
+            addErrorMessage("Thredds Server Name cannot be empty!");
             return false;
         }else{
             reset_alert();
         }
         if(thredds_server_url == ""){
-            addErrorMessage("Geoserver Url cannot be empty!");
+            addErrorMessage("Thredds Server Url cannot be empty!");
             return false;
         }else{
             reset_alert();
         }
         if(thredds_server_username == ""){
-            addErrorMessage("Geoserver Username cannot be empty!");
+            addErrorMessage("Thredds Server Username cannot be empty!");
             return false;
         }else{
             reset_alert();
         }
         if(thredds_server_password == ""){
-            addErrorMessage("Geoserver Password cannot be empty!");
+            addErrorMessage("Thredds Server Password cannot be empty!");
             return false;
         }else{
             reset_alert();
@@ -96,9 +96,9 @@ var GRACE_ADD_GEOSERVER = (function() {
             reset_alert();
         }
 
-//        if (geoserver_url.substr(-1) !== "/") {
-//            geoserver_url = geoserver_url.concat("/");
-//        }
+        if (thredds_server_url.substr(-1) !== "/") {
+            thredds_server_url = thredds_server_url.concat("/");
+        }
         var data = {"thredds_server_name":thredds_server_name,"thredds_server_url":thredds_server_url,"thredds_server_username":thredds_server_username,"thredds_server_password":thredds_server_password};
 
         var xhr = ajax_update_database("submit",data);

@@ -27,7 +27,7 @@ def get_global_dates():
     #     if file.startswith('GRC') and file.endswith('.nc'):
     #         grace_nc = GLOBAL_DIR + file
 
-    start_date = '01/01/2002'
+    start_date = '01/01/2002:00:00:00'
 
     nc_fid = Dataset(grace_nc, 'r')  # Reading the netcdf file
     nc_var = nc_fid.variables  # Get the netCDF variables
@@ -35,14 +35,14 @@ def get_global_dates():
 
     time = nc_var['time'][:]
 
-    date_str = datetime.strptime(start_date, "%m/%d/%Y")  # Start Date string.
+    date_str = datetime.strptime(start_date, "%m/%d/%Y:%H:%M:%S")  # Start Date string.
 
     for timestep, v in enumerate(time):
         current_time_step = nc_var['lwe_thickness'][timestep, :, :]  # Getting the index of the current timestep
 
         end_date = date_str + timedelta(days=float(v))  # Actual human readable date of the timestep
 
-        ts_file_name = end_date.strftime("%Y-%m-%d")  # Changing the date string format
+        ts_file_name = end_date.strftime("%Y-%m-%d:%H:%M:%S")  # Changing the date string format
         ts_display = end_date.strftime("%Y %B %d")
         grace_layer_options.append([ts_display,ts_file_name])
 
@@ -185,7 +185,7 @@ def get_global_plot(pt_coords,global_netc):
         end_date = date_str + timedelta(days=float(v))  # Actual human readable date of the timestep
 
         data = nc_var['lwe_thickness'][timestep, :, :]
-        print(data)
+
         # if data.any==float('nan'):
         #     print('its bad')
 

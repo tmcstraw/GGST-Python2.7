@@ -122,18 +122,371 @@ def region_add(request):
         Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
         session = Session()
 
-
         thredds = session.query(Thredds).get(thredds_id)
         url,uname,pwd = thredds.url,thredds.username,thredds.password
 
-
         subset2(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
-
-
 
         response = {"success":"success"}
 
         return JsonResponse(response)
+
+#############################################################################################
+##                                                                                         ##
+##          Chained Subsetting functions see add_region function in add_region.js          ##
+##                                                                                         ##
+#############################################################################################
+
+
+@user_passes_test(user_permission_test)
+def subset_initial_processing(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_initial(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"initial":"initial"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_jpl_tot(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_jpl_tot(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"jpl-tot":"jpl-tot"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_jpl_gw(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_jpl_gw(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"jpl-gw":"jpl-gw"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_csr_tot(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_csr_tot(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"csr-tot":"csr-tot"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_csr_gw(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_csr_gw(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"csr-gw":"csr-gw"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_gfz_tot(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_gfz_tot(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"gfz-tot":"gfz-tot"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_gfz_gw(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_gfz_gw(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"gfz-gw":"gfz-gw"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_avg_tot(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_avg_tot(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"avg-tot":"avg-tot"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_avg_gw(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_avg_gw(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"avg-gw":"avg-gw"}
+
+        return JsonResponse(response)
+
+
+@user_passes_test(user_permission_test)
+def subset_sw(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_sw(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"sw":"sw"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_soil(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_soil(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"soil":"soil"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_cleanup(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_file_cleanup(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"cleanup":"cleanup"}
+
+        return JsonResponse(response)
+
+@user_passes_test(user_permission_test)
+def subset_update(request):
+
+    response = {}
+
+    if request.is_ajax() and request.method == 'POST':
+        info = request.POST
+
+        region_name = info.get('region_name')
+        region_store = ''.join(region_name.split()).lower()
+        thredds_id = info.get('thredds')
+
+        shapefile = request.FILES.getlist('shapefile')
+
+        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        session = Session()
+
+        thredds = session.query(Thredds).get(thredds_id)
+        url,uname,pwd = thredds.url,thredds.username,thredds.password
+
+        sub_update_ps(shapefile, region_store, GLOBAL_NETCDF_DIR, region_name,thredds_id)
+
+        response = {"success":"success"}
+
+        return JsonResponse(response)
+
+
+
+#############################################################################################
+##                                                                                         ##
+##                              END Chained Subsetting functions                           ##
+##                                                                                         ##
+#############################################################################################
+
+
+
 
 @user_passes_test(user_permission_test)
 def thredds_server_add(request):
@@ -143,10 +496,10 @@ def thredds_server_add(request):
     if request.is_ajax() and request.method == 'POST':
         info = request.POST
 
-        thredds_name = info.get('thredds_name')
-        thredds_url = info.get('thredds_url')
-        thredds_username = info.get('thredds_username')
-        thredds_password = info.get('thredds_password')
+        thredds_server_name = info.get('thredds_server_name')
+        thredds_server_url = info.get('thredds_server_url')
+        thredds_server_username = info.get('thredds_server_username')
+        thredds_server_password = info.get('thredds_server_password')
 
         try:
             # cat = Catalog(thredds_url, username=thredds_username, password=thredds_password,disable_ssl_certificate_validation=True)
@@ -154,11 +507,11 @@ def thredds_server_add(request):
             # if layer_list:
             Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
             session = Session()
-            thredds_server = Thredds(name=thredds_name, url=thredds_url, username=thredds_username, password=thredds_password)
+            thredds_server = Thredds(name=thredds_server_name, url=thredds_server_url, username=thredds_server_username, password=thredds_server_password)
             session.add(thredds_server)
             session.commit()
             session.close()
-            response = {"data": thredds_name, "success": "Success"}
+            response = {"data": thredds_server_name, "success": "Success"}
         except Exception as e:
             print e
             response={"error":"Error processing the Thredds Server URL. Please check the url,username and password."}
@@ -175,11 +528,11 @@ def thredds_server_update(request):
     if request.is_ajax() and request.method == 'POST':
         # get/check information from AJAX request
         post_info = request.POST
-        thredds_id = post_info.get('thredds_id')
-        thredds_name = post_info.get('thredds_name')
-        thredds_url = post_info.get('thredds_url')
-        thredds_username = post_info.get('thredds_username')
-        thredds_password = post_info.get('thredds_password')
+        thredds_id = post_info.get('thredds_server_id')
+        thredds_name = post_info.get('thredds_server_name')
+        thredds_url = post_info.get('thredds_server_url')
+        thredds_username = post_info.get('thredds_server_username')
+        thredds_password = post_info.get('thredds_server_password')
         # check data
         if not thredds_id or not thredds_name or not thredds_url or not \
                 thredds_username or not thredds_password:
@@ -198,10 +551,10 @@ def thredds_server_update(request):
 
 
 
-            thredds.thredds_name = thredds_name
-            thredds.thredds_url = thredds_url
-            thredds.thredds_username = thredds_username
-            thredds.thredds_password = thredds_password
+            thredds.name = thredds_name
+            thredds.url = thredds_url
+            thredds.username = thredds_username
+            thredds.password = thredds_password
 
             session.commit()
             session.close()
@@ -218,7 +571,7 @@ def thredds_server_delete(request):
     if request.is_ajax() and request.method == 'POST':
         # get/check information from AJAX request
         post_info = request.POST
-        thredds_id = post_info.get('thredds_id')
+        thredds_id = post_info.get('thredds_server_id')
 
         # initialize session
         Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
@@ -236,7 +589,7 @@ def thredds_server_delete(request):
         except IntegrityError:
             session.close()
             return JsonResponse(
-                {'error': "This thredds server is connected with a watershed! Must remove connection to delete."})
+                {'error': "This thredds server is connected with a region! Must remove region to delete."})
         return JsonResponse({'success': "Thredds Server sucessfully deleted!"})
     return JsonResponse({'error': "A problem with your request exists."})
 

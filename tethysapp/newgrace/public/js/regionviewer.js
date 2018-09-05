@@ -2,7 +2,6 @@ var init_vars
 var point_grp = L.layerGroup();
 var get_ts;
 var mychart;
-var gemo_data =$("#point-lat-lon").val();
 
 L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
 
@@ -24,6 +23,7 @@ init_vars = function(){
         wms_url = $region_element.attr('data-wms-url');
         region_name =$region_element.attr('lower_name');
         region_name_upper=$region_element.attr('upper-name');
+        thredds_wms=$region_element.attr('thredds_wms');
         regioncenter = map_center;
 
 };
@@ -34,8 +34,8 @@ var regioncenter = map_center;
 
 //add a map to the html div "map" with time dimension capabilities. Times are currently hard coded, but will need to be changed as new GRACE data comes
 var map = L.map('map', {
-    crs: L.CRS.EPSG4326,
-    zoom: 3,
+    crs: L.CRS.EPSG3857,
+    zoom: 4,
 //    drawControl: true,
     fullscreenControl: true,
     timeDimension: true,
@@ -62,12 +62,30 @@ var map = L.map('map', {
 //add the background imagery
 var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
     layers: 'nasa:bluemarble'
-    }).addTo(map);
+    });
+
+var mapLink ='<a href="http://openstreetmap.org">OpenStreetMap</a>';
+
+var osm_layer = L.tileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; ' + mapLink + ' Contributors',
+                maxZoom: 18,
+            });
+//var bing_maps = L.TileLayer.Bing('5TC0yID7CYaqv3nVQLKe~xWVt4aXWMJq2Ed72cO4xsA~ApdeyQwHyH_btMjQS1NJ7OHKY8BK-W-EMQMrIavoQUMYXeZIQOUURnKGBOC7UCt4');
+//    bingMapsKey:'5TC0yID7CYaqv3nVQLKe~xWVt4aXWMJq2Ed72cO4xsA~ApdeyQwHyH_btMjQS1NJ7OHKY8BK-W-EMQMrIavoQUMYXeZIQOUURnKGBOC7UCt4',
+//    imagerySet: 'AerialWithLabels'
+//    });
 
 
 var baseLayers = {
 		"NASA": wmsLayer,
+		"Open Street Map":osm_layer,
+//		"BING":bing_maps,
+//		"sarva":osm_layer,
 	};
+
+var layer_control = L.control.layers(baseLayers).addTo(map);
+baseLayers.NASA.addTo(map);
 
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
@@ -112,7 +130,8 @@ map.on("draw:created", function (e) {
 
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
-var testWMS = "https://tethys.byu.edu/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+//var testWMS = "http://127.0.0.1:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+var testWMS = thredds_wms+"wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
 var colormin = $("#col_min").val();
 var colormax = $("#col_max").val();
 var opac = $("#opacity_val").val();
@@ -142,6 +161,7 @@ var testContourLayer = L.tileLayer.wms(testWMS, {
         format: 'image/png',
         transparent: true,
         opacity:0.7,
+        numcontours: 10,
         styles: testconstyle,
         colorscalerange:colormin+','+colormax,
         attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
@@ -269,7 +289,8 @@ function addGraph(){
 //        seriesname="Groundwater Storage";
 //    };
 
-    charturl="https://tethys.byu.edu/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+"_ts.nc.ascii?";
+//    charturl="http://127.0.0.1:7000/thredds/dodsC/testAll/grace/" + region +"/"+region+"_"+signal_process+"_"+storage_type+"_ts.nc.ascii?";
+    charturl=thredds_wms +"dodsC/testAll/grace/"+ region +"/"+region+"_"+signal_process+"_"+storage_type+"_ts.nc.ascii?";
 
     //get the data from the charturl for the time and lwe_thickness attributes
       var xhttp = new XMLHttpRequest();
@@ -482,10 +503,15 @@ get_ts = function(){
 function updateWMS(){
     map.removeLayer(testTimeLayer);
     map.removeLayer(testTimeConLayer);
+    layer_control.removeLayer(testTimeLayer);
+    layer_control.removeLayer(testTimeConLayer);
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS = "https://tethys.byu.edu/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+    var storage_name = $("#select_storage_type").find('option:selected').text();
+//    var testWMS = "http://127.0.0.1:7000/thredds/wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+    var testWMS = thredds_wms+"wms/testAll/grace/"+region+"/"+region+"_"+signal_process+"_"+storage_type+".nc";
+
     var date_value = new Date($("#select_layer").find('option:selected').val());
     var colormin = $("#col_min").val();
     var colormax = $("#col_max").val();
@@ -505,17 +531,19 @@ function updateWMS(){
 
     testconstyle='contour/'+type;
     testContourLayer = L.tileLayer.wms(testWMS, {
-        //layers: 'grace',
         layers:'lwe_thickness',
         format: 'image/png',
         transparent: true,
         opacity:0.7,
+        numcontours: 20,
+        crossOrigin: true,
+        crs: L.CRS.EPSG4326,
         styles: testconstyle,
         colorscalerange:colormin+','+colormax,
         attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
     });
     testTimeConLayer = L.timeDimension.layer.wms.timeseries(testContourLayer, {
-	    //proxy: proxy,
+//	    proxy: proxy,
 	    updateTimeDimension: true,
     	name: "Liquid Water Equivalent Thickness",
     	units: "cm",
@@ -528,6 +556,10 @@ function updateWMS(){
     	units: "cm",
     	enableNewMarkers: true
     });
+
+    layer_control.addOverlay(testTimeLayer, storage_name);
+    layer_control.addOverlay(testTimeConLayer, 'Contours');
+
 
     testTimeLayer.addTo(map);
     testTimeConLayer.addTo(map);

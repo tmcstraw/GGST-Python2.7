@@ -38,7 +38,7 @@ def api_get_point_values(request):
 
         GLOBAL_NC = GLOBAL_NETCDF_DIR+'GRC_'+signal_solution+'_'+storage_type+'.nc'
 
-        print(GLOBAL_NC)
+
 
 
         try:
@@ -76,7 +76,7 @@ def api_get_point_values(request):
         coords = str(longitude) + ',' + str(latitude)
 
         GLOBAL_NC = GLOBAL_NETCDF_DIR+'GRC_'+signal_solution+'_'+storage_type+'.nc'
-        print(GLOBAL_NC)
+
 
         try:
             graph = get_global_plot_api(coords,start_date,end_date,GLOBAL_NC)

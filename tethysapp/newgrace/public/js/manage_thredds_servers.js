@@ -50,11 +50,11 @@ var GRACE_MANAGE_GEOSERVERS = (function() {
             //check data store input
             var safe_to_submit = {val: true, error:""};
             var parent_row = $(this).parent().parent().parent();
-            var thredds_server_id = parent_row.find('.thredds-id').text();
-            var thredds_server_name = checkTableCellInputWithError(parent_row.find('.thredds-name'),safe_to_submit);
-            var thredds_server_url = checkTableCellInputWithError(parent_row.find('.thredds-url'),safe_to_submit);
-            var thredds_server_username = checkTableCellInputWithError(parent_row.find('.thredds-username'),safe_to_submit);
-            var thredds_server_password = checkTableCellInputWithError(parent_row.find('.thredds-password-input'),safe_to_submit);
+            var thredds_server_id = parent_row.find('.thredds-server-id').text();
+            var thredds_server_name = checkTableCellInputWithError(parent_row.find('.thredds-server-name'),safe_to_submit);
+            var thredds_server_url = checkTableCellInputWithError(parent_row.find('.thredds-server-url'),safe_to_submit);
+            var thredds_server_username = checkTableCellInputWithError(parent_row.find('.thredds-server-username'),safe_to_submit);
+            var thredds_server_password = checkTableCellInputWithError(parent_row.find('.thredds-server-password-input'),safe_to_submit);
 
             var data = {
                     thredds_server_id: thredds_server_id,
@@ -78,8 +78,8 @@ var GRACE_MANAGE_GEOSERVERS = (function() {
         //handle the submit delete event
         $('.submit-delete-thredds-server').click(function(){
         var data = {
-            geoserver_id: $(this).parent().parent().parent()
-                                .find('.thredds-id').text()
+            thredds_server_id: $(this).parent().parent().parent()
+                                .find('.thredds-server-id').text()
                 };
             //update database
             var xhr = deleteRowData($(this), data);

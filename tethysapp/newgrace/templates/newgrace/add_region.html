@@ -2,9 +2,18 @@
 {% load tethys_gizmos %}
 {% load staticfiles %}
 
+{% block styles %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'newgrace/css/main.css' %}" />
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/smoothness/jquery-ui.css" />
+{% endblock %}
+
 {% block app_content %}
 <h3>Add Region</h3>
-<div id="message" class="alert alert-danger hidden" role="alert"></div>
+<div id="message" class="alert alert-danger hidden" role="alert">
+
+</div>
+<div id="progressbar" class="progressbar" style="height: 20px;"></div>
 {% gizmo text_input region_name_input %}
 <h5>Thredds Server Location</h5>
 <em>Where the region shapefile is stored.</em><br/><br/>
@@ -15,8 +24,12 @@
     <input id="shp-upload-input" name="shp-upload-input" type="file" accept=".shp,.shx,.prj,.dbf" multiple>
 </div>
 {% gizmo button add_button %}
+
+
+
 {% endblock %}
 {% block after_app_content %}
+
 <!-- Help Modal -->
 <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
     <div class="modal-dialog">
@@ -192,8 +205,13 @@
         </div>
     </div>
 </div>
+
+
+
+
 {% endblock %}
 {% block scripts %}
 {{ block.super }}
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script src="{% static 'newgrace/js/add_region.js' %}" type="text/javascript"></script>
 {% endblock %}

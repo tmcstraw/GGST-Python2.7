@@ -1,5 +1,5 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
-from tethys_sdk.app_settings import PersistentStoreDatabaseSetting, PersistentStoreConnectionSetting
+from tethys_sdk.app_settings import PersistentStoreDatabaseSetting, PersistentStoreConnectionSetting, CustomSetting
 
 
 class Newgrace(TethysAppBase):
@@ -55,10 +55,69 @@ class Newgrace(TethysAppBase):
                 url='region/get-plot-reg-pt',
                 controller='newgrace.ajax_controllers.get_plot_reg_pt'
             ),
+
+
+
+
             UrlMap(name='add-region-ajax',
                    url='newgrace/add-region/submit',
                    controller='newgrace.ajax_controllers.region_add'
             ),
+            UrlMap(name='initial-processing-ajax',
+                   url='newgrace/add-region/initial',
+                   controller='newgrace.ajax_controllers.subset_initial_processing'
+            ),
+            UrlMap(name='jpl-tot-ajax',
+                   url='newgrace/add-region/jpl-tot',
+                   controller='newgrace.ajax_controllers.subset_jpl_tot'
+            ),
+            UrlMap(name='jpl-gw-ajax',
+                   url='newgrace/add-region/jpl-gw',
+                   controller='newgrace.ajax_controllers.subset_jpl_gw'
+            ),
+            UrlMap(name='csr-tot-ajax',
+                   url='newgrace/add-region/csr-tot',
+                   controller='newgrace.ajax_controllers.subset_csr_tot'
+            ),
+            UrlMap(name='csr-gw-ajax',
+                   url='newgrace/add-region/csr-gw',
+                   controller='newgrace.ajax_controllers.subset_csr_gw'
+            ),
+            UrlMap(name='gfz-tot-ajax',
+                   url='newgrace/add-region/gfz-tot',
+                   controller='newgrace.ajax_controllers.subset_gfz_tot'
+            ),
+            UrlMap(name='gfz-gw-ajax',
+                   url='newgrace/add-region/gfz-gw',
+                   controller='newgrace.ajax_controllers.subset_gfz_gw'
+            ),
+            UrlMap(name='avg-tot-ajax',
+                   url='newgrace/add-region/avg-tot',
+                   controller='newgrace.ajax_controllers.subset_avg_tot'
+            ),
+            UrlMap(name='avg-gw-ajax',
+                   url='newgrace/add-region/avg-gw',
+                   controller='newgrace.ajax_controllers.subset_avg_gw'
+            ),
+            UrlMap(name='sw-ajax',
+                   url='newgrace/add-region/sw',
+                   controller='newgrace.ajax_controllers.subset_sw'
+            ),
+            UrlMap(name='soil-ajax',
+                   url='newgrace/add-region/soil',
+                   controller='newgrace.ajax_controllers.subset_soil'
+            ),
+            UrlMap(name='cleanup-ajax',
+                   url='newgrace/add-region/cleanup',
+                   controller='newgrace.ajax_controllers.subset_cleanup'
+            ),
+            UrlMap(name='update-ajax',
+                   url='newgrace/add-region/update',
+                   controller='newgrace.ajax_controllers.subset_update'
+            ),
+
+
+
             UrlMap(
                 name='add-thredds-server',
                 url='add-thredds-server',
@@ -104,6 +163,23 @@ class Newgrace(TethysAppBase):
         )
 
         return url_maps
+
+    def custom_settings(self):
+        custom_settings = (
+            CustomSetting(
+                name='Local Thredds Folder Path',
+                type=CustomSetting.TYPE_STRING,
+                description='Path to Global NetCDF Directory (Local Folder Mounted to Thredds Docker)',
+                required=True,
+            ),
+            CustomSetting(
+                name='Thredds wms URL',
+                type=CustomSetting.TYPE_STRING,
+                description='URL to thredds Global Directory folder (make sure it paths to the folder and not a specific layer)',
+                required=True,
+            ),
+        )
+        return custom_settings
 
     def persistent_store_settings(self):
 

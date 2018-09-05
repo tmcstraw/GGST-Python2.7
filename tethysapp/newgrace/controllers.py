@@ -4,12 +4,20 @@ from tethys_sdk.gizmos import *
 from .app import *
 from model import *
 from utilities import *
-
+from config import thredds_url, GLOBAL_NETCDF_DIR, SHELL_DIR
+from update_global_data import *
 # @login_required()
 def home(request):
     """
     Controller for the app home page.
     """
+
+    # downloadFile(GLOBAL_NETCDF_DIR+'temp/')
+    # write_gldas_text_file()
+    # download_gldas_data()
+    # download_monthly_gldas_data()
+
+
     Session = Newgrace.get_persistent_store_database('grace_db',as_sessionmaker=True)
     session = Session()
     # Query DB for regions
@@ -44,7 +52,7 @@ def global_map(request):
     """
     Controller for the app home page.
     """
-
+    thredds_wms = thredds_url
 
     grace_layer_options = get_global_dates()
 
@@ -74,6 +82,7 @@ def global_map(request):
 
 
     context = {
+        "thredds_wms":thredds_wms,
         "select_storage_type":select_storage_type,
         'select_layer':select_layer,
         "select_signal_process":select_signal_process,
@@ -87,7 +96,11 @@ def region(request):
     """
     Controller for the app home page.
     """
+    thredds_wms = thredds_url
+
+
     context = {}
+
 
     info = request.GET
 
@@ -153,6 +166,7 @@ def region(request):
 
 
     context = {"region_id":region_id,
+               "thredds_wms":thredds_wms,
                "display_name":display_name,
                "select_layer":select_layer,
                "bbox":bbox,

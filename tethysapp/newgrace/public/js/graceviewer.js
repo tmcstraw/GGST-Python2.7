@@ -4,6 +4,11 @@ var gemo_data =$("#point-lat-lon").val();
 var date_value = new Date($("#select_layer").find('option:selected').val());
 var point_grp = L.layerGroup();
 
+$map_element= $('#map');
+thredds_wms=$map_element.attr('thredds_wms');
+
+
+
 L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
 
         initialize: function(layer, options) {
@@ -49,13 +54,12 @@ var other_map = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', 
 var test_map = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
     layers: 'maps:dark'});
 
-var mapLink =
-            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+var mapLink ='<a href="http://openstreetmap.org">OpenStreetMap</a>';
+
 var osm_layer = L.tileLayer(
             'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; ' + mapLink + ' Contributors',
                 maxZoom: 18,
-                crs: L.CRS.EPSG4326,
             });
 
 var baseLayers = {
@@ -118,7 +122,9 @@ map.on('fullscreenchange', function() {
 
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
-var testWMS="https://tethys.byu.edu/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+//var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+var testWMS = thredds_wms+"wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc";
+
 var testLayer = L.tileLayer.wms(testWMS, {
     layers: 'grace',
     layers:'lwe_thickness',
@@ -152,7 +158,10 @@ function updateWMS(){
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
-    var testWMS="https://tethys.byu.edu/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+    var storage_name = $("#select_storage_type").find('option:selected').text();
+//    var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
+    var testWMS = thredds_wms+"wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc";
+
     var date_value = new Date($("#select_layer").find('option:selected').val());
     var colormin = $("#col_min").val();
     var colormax = $("#col_max").val();
@@ -177,7 +186,7 @@ function updateWMS(){
     	enableNewMarkers: true,
     });
 
-    layer_control.addOverlay(testTimeLayer, 'Water Storage Anomaly');
+    layer_control.addOverlay(testTimeLayer, storage_name);
 
     testTimeLayer.addTo(map);
 
