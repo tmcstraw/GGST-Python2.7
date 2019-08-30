@@ -8,7 +8,6 @@ $map_element= $('#map');
 thredds_wms=$map_element.attr('thredds_wms');
 
 
-
 L.TimeDimension.Layer.WMS.TimeSeries = L.TimeDimension.Layer.WMS.extend({
 
         initialize: function(layer, options) {
@@ -21,9 +20,12 @@ L.timeDimension.layer.wms.timeseries = function(layer, options) {
 };
 
 var map = L.map('map', {
-    crs: L.CRS.EPSG4326,
+    crs: L.CRS.EPSG3857,
+    attributionControl: true,
+    attributionControlOptions:{
+        position:'bottomright'},
     zoom: 1,
-    maxBounds: L.latLngBounds(L.latLng(-90.0,-155.0), L.latLng(90.0,180.0)),
+    maxBounds: L.latLngBounds(L.latLng(-90.0,-180.0), L.latLng(90.0,180.0)),
     fullscreenControl: true,
     timeDimension: true,
     timeDimensionOptions:{
@@ -33,6 +35,7 @@ var map = L.map('map', {
     },
     timeDimensionControl: true,
     timeDimensionControlOptions:{
+                position: 'bottomleft',
                 playerOptions:{
                         loop:true,
                         startover:true,
@@ -41,32 +44,49 @@ var map = L.map('map', {
                 timeSliderDragUpdate: true,
                 loopButton:true,
     },
-    center: [0.0, 15.0],
+    center: [0.0, 0.0],
 });
 
-var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
-    layers: 'nasa:bluemarble'
+//var attribution_control = L.control.attribution({
+//        position: 'bottomright'}
+//        );
+//var src=testWMS+"?REQUEST=GetLegendGraphic&LAYER=lwe_thickness&PALETTE="+type+"&COLORSCALERANGE="+colormin+","+colormax;
+//        var div = L.DomUtil.create('div', 'info legend');
+//        div.innerHTML +=
+//            '<img src="' + src + '" alt="legend" style="width:80%; float:right;">';
+//        return div;
+//attribution_control.onAdd= function(map) {
+//    var attrdiv = L.DomUtil.create('div', 'attribute');
+//        attrdiv.innerHTML +=
+//            '<div style="width:50%; float:right;">'+attribution_control;
+////            Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012';
+//        return attrdiv;
+//    };
+//map.addControl(attribution_control);
+
+
+
+var Esri_WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri 2012 <a href="https://leaflet-extras.github.io/leaflet-providers/preview/">See Here</a>'
 });
 
-var other_map = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
-    layers: 'ne:NE1_HR_LC_SR_W_DR'});
 
-var test_map = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
-    layers: 'maps:dark'});
+var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri 2012 <a href="https://leaflet-extras.github.io/leaflet-providers/preview/">See Here</a>'
+});
 
-var mapLink ='<a href="http://openstreetmap.org">OpenStreetMap</a>';
+var Stamen_TonerHybrid = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}{r}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 20,
+	ext: 'png'
+});
 
-var osm_layer = L.tileLayer(
-            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; ' + mapLink + ' Contributors',
-                maxZoom: 18,
-            });
 
 var baseLayers = {
-		"NASA": wmsLayer,
-		"Natural_Earth":other_map,
-//		"test":test_map,
-//		"sarva":osm_layer,
+		"ESRI_World_Imagery": Esri_WorldImagery,
+		"ESRI World Street Map": Esri_WorldStreetMap,
 	};
 
 
@@ -118,12 +138,14 @@ map.on("draw:edited", function (e) {
 
 map.on('fullscreenchange', function() {
     if (map.isFullscreen()) {
+        map.setView(0.0,15.0)}
+    else {
         map.setView(0.0,15.0)}});
 
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
 //var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
-var testWMS = thredds_wms+"wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc";
+var testWMS = thredds_wms+"wms/testAll/grace/temp2/GRC_"+signal_process+"_"+storage_type+".nc";
 
 var testLayer = L.tileLayer.wms(testWMS, {
     layers: 'grace',
@@ -133,7 +155,6 @@ var testLayer = L.tileLayer.wms(testWMS, {
     opacity:0.7,
     styles: 'boxfill/grace',
     colorscalerange:'-50,50',
-    attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
 });
 
 var testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
@@ -143,24 +164,88 @@ var testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
     units: "cm",
     enableNewMarkers: true
 });
-//testTimeLayer.addTo(map);
+
+var clm4WMS = thredds_wms+"wms/testAll/grace/temp2/CLM4_scale_factor_test.nc";
+    scaleFactorLayer = L.tileLayer.wms(clm4WMS, {
+        layers:'SCALE_FACTOR',
+        format:'image/png',
+        transparent: true,
+        opacity: 0.7,
+        styles: 'boxfill/rainbow',
+        colorscalerange:'-0.5,3',
+    });
+
+    scaleFactorTimeLayer = L.timeDimension.layer.wms.timeseries(scaleFactorLayer, {
+	    //proxy: proxy,
+	    updateTimeDimension: true,
+    	name: "Scale Factor",
+    	units: "NA",
+    	enableNewMarkers: true,
+    });
+    leakageErrorLayer = L.tileLayer.wms(clm4WMS, {
+        layers:'LEAKAGE_ERROR',
+        format:'image/png',
+        transparent: true,
+        opacity: 0.7,
+        styles: 'boxfill/rainbow',
+        colorscalerange:'0,10',
+    });
+
+    leakageErrorTimeLayer = L.timeDimension.layer.wms.timeseries(leakageErrorLayer, {
+	    //proxy: proxy,
+	    updateTimeDimension: true,
+    	name: "Leakage Error",
+    	units: "Acre-ft",
+    	enableNewMarkers: true,
+    });
+    measurementErrorLayer = L.tileLayer.wms(clm4WMS, {
+        layers:'MEASUREMENT_ERROR',
+        format:'image/png',
+        transparent: true,
+        opacity: 0.7,
+        styles: 'boxfill/rainbow',
+        colorscalerange:'-0.5,5',
+    });
+
+    measurementErrorTimeLayer = L.timeDimension.layer.wms.timeseries(measurementErrorLayer, {
+	    //proxy: proxy,
+	    updateTimeDimension: true,
+    	name: "Measurement Error",
+    	units: "NA",
+    	enableNewMarkers: true,
+    });
 
 var testLegend = L.control({
     position: 'topright'
     });
+var test2Legend = L.control({
+    position: 'topright'
+    });
+
+
+
 
 var layer_control = L.control.layers(baseLayers).addTo(map);
-baseLayers.NASA.addTo(map);
+baseLayers.ESRI_World_Imagery.addTo(map);
 
 function updateWMS(){
+    map.removeLayer(Stamen_TonerHybrid);
+    layer_control.removeLayer(Stamen_TonerHybrid);
     map.removeLayer(testTimeLayer);
     layer_control.removeLayer(testTimeLayer);
+    map.removeLayer(scaleFactorTimeLayer);
+    layer_control.removeLayer(scaleFactorTimeLayer);
+    map.removeLayer(leakageErrorTimeLayer);
+    layer_control.removeLayer(leakageErrorTimeLayer);
+    map.removeLayer(measurementErrorTimeLayer);
+    layer_control.removeLayer(measurementErrorTimeLayer);
+
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
     var storage_name = $("#select_storage_type").find('option:selected').text();
 //    var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
-    var testWMS = thredds_wms+"wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc";
+    var testWMS = thredds_wms+"wms/testAll/grace/temp2/GRC_"+signal_process+"_"+storage_type+".nc";
 
     var date_value = new Date($("#select_layer").find('option:selected').val());
     var colormin = $("#col_min").val();
@@ -188,7 +273,72 @@ function updateWMS(){
 
     layer_control.addOverlay(testTimeLayer, storage_name);
 
+    var clm4WMS = thredds_wms+"wms/testAll/grace/temp2/CLM4_scale_factor_test.nc";
+    scaleFactorLayer = L.tileLayer.wms(clm4WMS, {
+        layers:'SCALE_FACTOR',
+        format:'image/png',
+        transparent: true,
+        opacity: opac,
+        styles: 'boxfill/rainbow',
+        colorscalerange:'-0.5,3',
+        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
+    });
+
+    scaleFactorTimeLayer = L.timeDimension.layer.wms.timeseries(scaleFactorLayer, {
+	    //proxy: proxy,
+	    updateTimeDimension: true,
+    	name: "Scale Factor",
+    	units: "Acre-ft",
+    	enableNewMarkers: true,
+    });
+
+    layer_control.addOverlay(scaleFactorTimeLayer, 'CLM4 Scale Factors');
+
+
+    leakageErrorLayer = L.tileLayer.wms(clm4WMS, {
+        layers:'LEAKAGE_ERROR',
+        format:'image/png',
+        transparent: true,
+        opacity: opac,
+        styles: 'boxfill/rainbow',
+        colorscalerange:'0,10',
+        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
+    });
+
+    leakageErrorTimeLayer = L.timeDimension.layer.wms.timeseries(leakageErrorLayer, {
+	    //proxy: proxy,
+	    updateTimeDimension: true,
+    	name: "Leakage Error",
+    	units: "Acre-ft",
+    	enableNewMarkers: true,
+    });
+
+    layer_control.addOverlay(leakageErrorTimeLayer, 'CLM4 Leakage Errors');
+
+    measurementErrorLayer = L.tileLayer.wms(clm4WMS, {
+        layers:'MEASUREMENT_ERROR',
+        format:'image/png',
+        transparent: true,
+        opacity: opac,
+        styles: 'boxfill/rainbow',
+        colorscalerange:'-0.5,5',
+        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
+    });
+
+    measurementErrorTimeLayer = L.timeDimension.layer.wms.timeseries(measurementErrorLayer, {
+	    //proxy: proxy,
+	    updateTimeDimension: true,
+    	name: "Measurement Error",
+    	units: "NA",
+    	enableNewMarkers: true,
+    });
+
+    layer_control.addOverlay(measurementErrorTimeLayer, 'CLM4 Measurement Errors');
+
+    layer_control.addOverlay(Stamen_TonerHybrid, 'Borders and Labels');
+
     testTimeLayer.addTo(map);
+    Stamen_TonerHybrid.addTo(map);
 
     testLegend.onAdd= function(map) {
 
@@ -198,8 +348,88 @@ function updateWMS(){
             '<img src="' + src + '" alt="legend" style="width:80%; float:right;">';
         return div;
     };
+
     testLegend.addTo(map);
     map.timeDimension.setCurrentTime(date_value);
+
+
+    scaleFactorTimeLayer.on('add', function(event) {
+
+//        layer_control.removeLayer(leakageErrorTimeLayer);
+//        layer_control.addOverlay(leakageErrorTimeLayer, 'CLM4 Leakage Errors');
+//        layer_control.removeLayer(measurementErrorTimeLayer);
+//        layer_control.addOverlay(measurementErrorTimeLayer, 'CLM4 Measurement Errors');
+        leakageErrorTimeLayer.removeFrom(map);
+        measurementErrorTimeLayer.removeFrom(map);
+
+        test2Legend.onAdd= function(map) {
+//            map.removeControl(test2Legend)
+            var src=clm4WMS+"?REQUEST=GetLegendGraphic&LAYER=SCALE_FACTOR&PALETTE=rainbow&COLORSCALERANGE=-0.5,3";
+            var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML +=
+                '<img src="' + src + '" alt="legend" style="width:80%; float:right;">';
+            return div;
+    };
+        test2Legend.addTo(map);
+    });
+
+    scaleFactorTimeLayer.on('remove', function(event) {
+
+            map.removeControl(test2Legend)
+    });
+
+    leakageErrorTimeLayer.on('add', function(event) {
+
+//        layer_control.removeLayer(scaleFactorTimeLayer);
+//        layer_control.addOverlay(scaleFactorTimeLayer, 'CLM4 Scale Factors');
+//        layer_control.removeLayer(measurementErrorTimeLayer);
+//        layer_control.addOverlay(measurementErrorTimeLayer, 'CLM4 Measurement Errors');
+        measurementErrorTimeLayer.removeFrom(map);
+        scaleFactorTimeLayer.removeFrom(map);
+
+        test2Legend.onAdd= function(map) {
+//            map.removeControl(test2Legend)
+            var src=clm4WMS+"?REQUEST=GetLegendGraphic&LAYER=LEAKAGE_ERROR&PALETTE=rainbow&COLORSCALERANGE=0,10";
+            var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML +=
+                '<img src="' + src + '" alt="legend" style="width:80%; float:right;">';
+            return div;
+    };
+        test2Legend.addTo(map);
+    });
+
+    leakageErrorTimeLayer.on('remove', function(event) {
+
+            map.removeControl(test2Legend)
+    });
+
+    measurementErrorTimeLayer.on('add', function(event) {
+        map.removeLayer(scaleFactorTimeLayer);
+        map.removeLayer(leakageErrorTimeLayer);
+
+//        layer_control.removeLayer(scaleFactorTimeLayer);
+//        layer_control.addOverlay(scaleFactorTimeLayer, 'CLM4 Scale Factors');
+//        layer_control.removeLayer(leakageErrorTimeLayer);
+//        layer_control.addOverlay(leakageErrorTimeLayer, 'CLM4 Leakage Errors');
+//        leakageErrorTimeLayer.removeFrom(map);
+//        scaleFactorTimeLayer.removeFrom(map);
+
+        test2Legend.onAdd= function(map) {
+//            map.removeControl(test2Legend)
+            var src=clm4WMS+"?REQUEST=GetLegendGraphic&LAYER=MEASUREMENT_ERROR&PALETTE=rainbow&COLORSCALERANGE=-0.5,5";
+            var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML +=
+                '<img src="' + src + '" alt="legend" style="width:80%; float:right;">';
+            return div;
+    };
+        test2Legend.addTo(map);
+    });
+
+    measurementErrorTimeLayer.on('remove', function(event) {
+
+            map.removeControl(test2Legend)
+    });
+
 };
 
 function getInstructions() {
@@ -278,7 +508,7 @@ get_ts = function(){
                     },
                     yAxis: {
                         title: {
-                            text: "Liquid Water Equivalent Thickness (cm)",
+                            text: "Volume",
                         }
 
                     },
@@ -292,7 +522,19 @@ get_ts = function(){
                         visible: true,
                         tooltip: {
                             valueDecimals: 2,
-                            valueSuffix: 'cm',
+                            valueSuffix: ' Liquid Water Eqv. Thickness (cm)',
+                            xDateFormat: '%A, %b %e, %Y',
+                            headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
+                        }
+                    },
+                    {
+                        data:result.integr_values,
+                        name: signal_name + storage_name + ' Integrated',
+                        type: 'area',
+                        visible: false,
+                        tooltip: {
+                            valueDecimals: 2,
+                            valueSuffix: ' Change in Volume since April 16, 2002 (Acre-ft)',
                             xDateFormat: '%A, %b %e, %Y',
                             headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
                         }
@@ -445,6 +687,17 @@ get_ts = function(){
 //                    active_series.show();
 //
 //                    };
+
+function getSignalGuide (){
+    $("#signal-modal").modal('show');
+
+};
+
+function getStorageGuide (){
+    $("#storage-modal").modal('show');
+
+};
+
 
 $(function(){
     updateWMS();

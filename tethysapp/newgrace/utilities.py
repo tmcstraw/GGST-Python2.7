@@ -18,6 +18,8 @@ import geojson
 import pyproj
 from pyproj import Proj, transform
 from config import GLOBAL_NETCDF_DIR
+from hs_restclient import HydroShare
+
 
 
 def get_global_dates():
@@ -156,7 +158,7 @@ def get_global_plot(pt_coords,global_netc):
     graph_json = {}
 
     ts_plot = []
-
+    ts_plot_int = []
     nc_file = global_netc
 
     coords = pt_coords.split(',')
@@ -184,21 +186,47 @@ def get_global_plot(pt_coords,global_netc):
 
         end_date = date_str + timedelta(days=float(v))  # Actual human readable date of the timestep
 
+
         data = nc_var['lwe_thickness'][timestep, :, :]
+
+        timestep2 = timestep - 1
+
+        data2 = nc_var['lwe_thickness'][timestep2, :, :]
+
+
+
+
 
         # if data.any==float('nan'):
         #     print('its bad')
 
         lon_idx = (np.abs(lon - stnd_lon)).argmin()
         lat_idx = (np.abs(lat - stn_lat)).argmin()
-        value = data[lat_idx, lon_idx]
 
+        if timestep == 0:
+            init_value = data[lat_idx, lon_idx]
+        else:
+            init_value = init_value
+
+        value = data[lat_idx, lon_idx]
+        print(value)
+        print(init_value)
+        difference_data_value = (value - init_value) * 0.01 * 6371000 * math.radians(0.25) * 6371000 * math.radians(0.25) * abs(math.cos(math.radians(lat_idx))) * 0.000810714
+        print(math.cos(math.radians(lat_idx)))
+        print(value -init_value)
+        print(difference_data_value)
         time_stamp = calendar.timegm(end_date.utctimetuple()) * 1000
+
+        ts_plot_int.append([time_stamp, round(float(difference_data_value), 3)])
+        ts_plot_int.sort()
 
         ts_plot.append([time_stamp, round(float(value), 3)])
         ts_plot.sort()
 
     graph_json["values"] = ts_plot
+    graph_json["integr_values"] = ts_plot_int
     graph_json["point"] = [round(stn_lat, 2), round(stn_lon, 2)]
     graph_json = json.dumps(graph_json)
     return graph_json
+
+

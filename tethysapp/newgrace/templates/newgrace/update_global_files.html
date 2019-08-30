@@ -2,85 +2,30 @@
 {% load tethys_gizmos %}
 {% load staticfiles %}
 
-{% block header_buttons %}
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
-    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
-  </div>
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="API">
-    <a data-toggle="modal" data-target="#api-modal"><span class="glyphicon glyphicon-info-sign"></span></a>
-  </div>
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Home">
-    <a href="{% url 'newgrace:home' %}"><span class="glyphicon glyphicon-home"></span></a>
-  </div>
-
-{% endblock %}
-
 {% block styles %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'newgrace/css/main.css' %}" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
-<link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css" />
-<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
-
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/smoothness/jquery-ui.css" />
 {% endblock %}
 
 {% block app_content %}
-  <html>
-    <head>
-        <title>GRACE Data Viewer</title>
+<h3>Update GRACE Global Files</h3>
 
-    </head>
-    <body>
-    <script>window.onbeforeunload = null;</script>
+<p>The GRACE global files used in this application are stored on a repository at hydroshare.org.  You will be required to create a hydroshare user account in order to download the files.  After clicking the Update Files button, you will be prompted for your hydroshare username and password.  There are 9 files to download and their sizes range from 40MB to 500MB.  Download speeds will vary depending on internet connection. </p>
 
-        <span class="leg_min_max" style="white-space:nowrap; float:right; margin-left:0px;">
-                Select Symbology:
-                <select onchange=updateWMS() id="select_legend">
-                        <option value="grace">Grace</option>
-                        <option value="redblue">Red-blue</option>
-                        <option value="rainbow">Rainbow</option>
-                        <option value="occam">Occam</option>
-                        <option value="ncview">ncview</option>
-                        <option value="sst_36">sst_36</option>
-                        <option value="greyscale">greyscale</option>
-                        <option value="alg2">alg2</option>
-                        <option value="occam_pastel-30">occam_pastel-30</option>
-                        <option value="alg">alg</option>
-                        <option value="ferret">ferret</option>
-                </select>
+{% gizmo button update_files_button %}
 
-                Min:
-                    <input type="number" name="leg_min" id="col_min" min="-100" max="100" step="5" value="-50" onchange=updateWMS()>
-                Max:
-                    <input type="number" name="leg_max" id="col_max" min="-100" max="100" step="5" value="50" onchange=updateWMS()>
-                Opacity:
-                    <input type="number" name="opacity" id="opacity_val" min="0.1" max="1" step="0.1" value="0.7" onchange=updateWMS()>
-
-        </span>
-        <div id="map" thredds_wms={{thredds_wms}} style="height: 500px; width: 100%"></div>
-        <br>
-	<div id="point-lat-lon"></div>
-        <div align="center" class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="/static/newgrace/images/loader.gif" /></div>
-        <br>
-	<div id="plotter"></div>
-
-    <script type="text/javascript" src="{% static 'newgrace/js/graceviewer.js' %}"></script>
-    </body>
-</html>
 
 {% endblock %}
-
-{# Use the after_app_content block for modals #}
 {% block after_app_content %}
-  <!-- Help Modal -->
+
+<!-- Help Modal -->
 <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Guide</h4>
             </div>
             <div class="modal-body">
@@ -250,109 +195,11 @@
     </div>
 </div>
 
-<!-- Signal Selection Guide Modal -->
-<div class="modal fade" id="signal-modal" tabindex="-1" role="dialog" aria-labelledby="signal-modal-label">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h2 class="modal-title" id="signal-modal-label">Which Solution Should I Choose?</h2>
-            </div>
-            <div class="modal-body">
-                <p>Since the satellite mission began, the JPL, CSR, and GFZ solutions have been provided by the official GRACE Science Data System.  The differences between these solutions are often small and fall within the error bounds of the raw GRACE data.  Several papers have been written regarding the benefits of using different solutions in different parts of the world.  For your reference, these papers are cited below:</p>
-                <br>
-                <p>One paper in particular suggested that the ensemble average of the three signal solutions proved to be most acurate.  This solution is the reccomendation given to users on the grace.jpl.nasa.gov website where the grace data is distributed. </p>
-                <p>See below:</p>
-                <a href="https://grace.jpl.nasa.gov/data/choosing-a-solution/" target="_blank">NASA Reccomendation</a>
-                <br><br>
-                <span>Sakumura, C., S. Bettadpur, and S. Bruinsma (2014), Ensemble prediction and intercomparison analysis of GRACE time-variable gravity field models, Geophys. Res. Lett., 41, 1389–1397,</span>
-                <span><a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/2013GL058632" target="_blank"> doi:10.1002/2013GL058632.</a></span>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Storage Type Info Modal -->
-<div class="modal fade" id="storage-modal" tabindex="-1" role="dialog" aria-labelledby="storage-modal-label">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h2 class="modal-title" id="storage-modal-label">Deriving Groundwater</h2>
-            </div>
-            <div class="modal-body">
-                <p>Explain Grid Resolution and Total Water Storage</p>
-                <p>Explain Leakage Errors, Measurement Errors, and Scale Factors Layers</p>
-                <p>Explain GLDAS data and calculating proper mean</p>
-                <p>Explain how Groundwater was derived</p>
-                <p>Link to shell script for reference</p>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block app_navigation_items %}
-
-<li class="title">App Navigation</li>
-<li {% if request.path == '/apps/newgrace/' %} class="active" {% endif %}><a href="{% url 'newgrace:home' %}">Home</a></li>
-<li {% if 'global-map' in request.path  %} class="active" {% endif %}><a href="{% url 'newgrace:global-map' %}">Global Map</a></li>
-<br>
-
-<span style="white-space:nowrap; float:left; margin-left:2%; color:blue; cursor:pointer;" id= info-signal-button onclick=getSignalGuide() class="glyphicon glyphicon-info-sign">_</span>
-
-{% gizmo select_input select_signal_process %}
-
-<span style="white-space:nowrap; float:left; margin-left:2%; color:blue; cursor:pointer;" id= info-storage-button onclick=getStorageGuide() class="glyphicon glyphicon-info-sign">_</span>
-
-{% gizmo select_input select_storage_type %}
-
-
-{% gizmo select_input select_layer %}
-
-<br>
-<span style="white-space:nowrap; float:left; margin-left:2%; color:blue; cursor:pointer;" id= info-button onclick=getInstructions() class="glyphicon glyphicon-info-sign">_</span>
-
-    <span style="white-space:nowrap; float:left;"><p style="font-size:14; color:black;"><b>Time Series Generator</b></p></span>
-    <!--<span style="white-space:nowrap; float:left; margin-left:2%; color:blue; cursor:pointer;" id= info-button onclick=getInstructions() class="glyphicon glyphicon-info-sign"></span>-->
-    <br>
-    <div id= "ts-instructions" class="time-series-instructions">
-        <br><p>To generate a time series for a specific location, click on the <b>Marker Icon</b>
-        <span id= marker-icon class="glyphicon glyphicon-map-marker"></span>
-         on left side of the map.  Then place the marker at the location for which you wish to extract a time series from the current map layer.</p>
-    </div>
-<br>
 
 
 {% endblock %}
-
-{% block global_scripts %}
-{{block.super}}
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4-src.js"></script>
-<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
-<script type="text/javascript" src="https://cdn.rawgit.com/nezasa/iso8601-js-period/master/iso8601.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.js"></script>
-<script type="text/javascript" src="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.min.js"></script>
-<script src="https://code.highcharts.com/stock/highstock.js"></script>
-<script src="https://code.highcharts.com/highcharts-more.js"></script>
-<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
-<script src="https://highcharts.github.io/export-csv/export-csv.js"></script>
-<script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.3.4/chroma.min.js"></script>
-<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
-<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.4.2/Control.FullScreen.min.js"></script>-->
-
-{% endblock %}
-
-{% block app_actions %}
-
+{% block scripts %}
+{{ block.super }}
+<script src="{% static 'newgrace/js/update_global_files.js' %}" type="text/javascript"></script>
 {% endblock %}

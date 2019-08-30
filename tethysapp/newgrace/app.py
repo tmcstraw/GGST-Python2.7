@@ -36,6 +36,21 @@ class Newgrace(TethysAppBase):
                 controller='newgrace.controllers.global_map'
             ),
             UrlMap(
+                name='check-for-updates',
+                url='newgrace/check-for-updates',
+                controller='newgrace.ajax_controllers.check_for_updates'
+            ),
+            UrlMap(
+                name='download-hs-files',
+                url='newgrace/download-hs-files',
+                controller='newgrace.ajax_controllers.download_hs_files'
+            ),
+            UrlMap(
+                name='update-global-files',
+                url='newgrace/update-global-files',
+                controller='newgrace.controllers.update_global_files'
+            ),
+            UrlMap(
                 name='region',
                 url='region',
                 controller='newgrace.controllers.region'
@@ -160,6 +175,7 @@ class Newgrace(TethysAppBase):
             UrlMap(name='api_get_point_values',
                    url='newgrace/api/GetPointValues',
                    controller='newgrace.api.api_get_point_values'),
+
         )
 
         return url_maps

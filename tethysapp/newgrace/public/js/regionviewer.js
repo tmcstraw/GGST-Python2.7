@@ -64,6 +64,10 @@ var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
     layers: 'nasa:bluemarble'
     });
 
+var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri 2012 <a href="https://leaflet-extras.github.io/leaflet-providers/preview/">See Here</a>'
+});
+
 var mapLink ='<a href="http://openstreetmap.org">OpenStreetMap</a>';
 
 var osm_layer = L.tileLayer(
@@ -78,14 +82,14 @@ var osm_layer = L.tileLayer(
 
 
 var baseLayers = {
-		"NASA": wmsLayer,
+		"ESRI_World_Imagery": Esri_WorldImagery,
 		"Open Street Map":osm_layer,
 //		"BING":bing_maps,
 //		"sarva":osm_layer,
 	};
 
 var layer_control = L.control.layers(baseLayers).addTo(map);
-baseLayers.NASA.addTo(map);
+baseLayers.ESRI_World_Imagery.addTo(map);
 
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);

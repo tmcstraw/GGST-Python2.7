@@ -268,3 +268,5 @@ function addInfoMessage(message, div_id) {
 
 }
 
+function checkForUpdatedFiles(){
+    ajax_update_database('check-for-updates',)}

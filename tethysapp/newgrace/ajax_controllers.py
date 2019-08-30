@@ -17,8 +17,6 @@ from config import *
 from SHAZAAM import *
 from utilities import *
 
-
-
 def get_plot_global(request):
 
     return_obj = {}
@@ -61,6 +59,7 @@ def get_plot_global(request):
         graph = get_global_plot(pt_coords,gbyos_grc_ncf)
         graph = json.loads(graph)
         return_obj["values"] = graph["values"]
+        return_obj["integr_values"] = graph["integr_values"]
         return_obj["location"] = graph["point"]
 
 
@@ -642,3 +641,36 @@ def region_delete(request):
                     shutil.rmtree(region_dir)
         return JsonResponse({'success': "Region sucessfully deleted!"})
     return JsonResponse({'error': "A problem with your request exists."})
+
+def check_for_updates(request):
+    """
+    Controller for checking updates to GRACE Global Files on Hydroshare.
+    """
+    if request.is_ajax() and request.method == 'POST':
+        # get/check information from AJAX request
+        post_info = request.POST
+        region_id = post_info.get('region_id')
+
+
+    return JsonResponse({'error': "A problem with your request exists."})
+
+def download_hs_files(request):
+    # if request.is_ajax and request.method == 'POST':
+    #
+    #     hs = HydroShare()
+    #
+    # staging_dir = GLOBAL_NETCDF_DIR
+    # resourcelist = hs.getResourceFileList(d6900bc0dd5d47caafa6d1e8a91b676b)
+    #
+    # filelist = []
+    #
+    # for resource in resourcelist:
+    #     url = resource['url'].split("/")
+    #     fname = url[-1]
+    #     hs.getResourceFile(d6900bc0dd5d47caafa6d1e8a91b676b, fname, destination=staging_dir)
+    #     filelist.append(fname)
+
+    response = {"success":"success"}
+
+    return JsonResponse(response)
+
