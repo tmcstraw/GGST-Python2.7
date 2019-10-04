@@ -25,7 +25,7 @@ init_vars = function(){
         region_name_upper=$region_element.attr('upper-name');
         thredds_wms=$region_element.attr('thredds_wms');
         regioncenter = map_center;
-
+        region_area = $region_element.attr('region-area');
 };
 
 init_vars()
@@ -60,32 +60,28 @@ var map = L.map('map', {
 
 
 //add the background imagery
-var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
-    layers: 'nasa:bluemarble'
-    });
+
+var Esri_WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri 2012 <a href="https://leaflet-extras.github.io/leaflet-providers/preview/">See Here</a>'
+});
+
 
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
 	attribution: 'Tiles &copy; Esri 2012 <a href="https://leaflet-extras.github.io/leaflet-providers/preview/">See Here</a>'
 });
 
-var mapLink ='<a href="http://openstreetmap.org">OpenStreetMap</a>';
-
-var osm_layer = L.tileLayer(
-            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; ' + mapLink + ' Contributors',
-                maxZoom: 18,
-            });
-//var bing_maps = L.TileLayer.Bing('5TC0yID7CYaqv3nVQLKe~xWVt4aXWMJq2Ed72cO4xsA~ApdeyQwHyH_btMjQS1NJ7OHKY8BK-W-EMQMrIavoQUMYXeZIQOUURnKGBOC7UCt4');
-//    bingMapsKey:'5TC0yID7CYaqv3nVQLKe~xWVt4aXWMJq2Ed72cO4xsA~ApdeyQwHyH_btMjQS1NJ7OHKY8BK-W-EMQMrIavoQUMYXeZIQOUURnKGBOC7UCt4',
-//    imagerySet: 'AerialWithLabels'
-//    });
+var Stamen_TonerHybrid = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}{r}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 20,
+	ext: 'png'
+});
 
 
 var baseLayers = {
 		"ESRI_World_Imagery": Esri_WorldImagery,
-		"Open Street Map":osm_layer,
-//		"BING":bing_maps,
-//		"sarva":osm_layer,
+		"ESRI World Street Map": Esri_WorldStreetMap,
 	};
 
 var layer_control = L.control.layers(baseLayers).addTo(map);
@@ -226,7 +222,7 @@ function addGraph(){
             },
             yAxis: {
                     title: {
-                        text: "Liquid Water Equivalent Thickness (cm)",
+                        text: "Storage Volume",
                     }
 
             },
@@ -271,10 +267,13 @@ function addGraph(){
 //for (var chartnumber=0;chartnumber<4;chartnumber++)
 //{
     var color;
+    var depletion_color
     var charttype;
     var seriesname;
     charttype="Total";
     color="#053372";
+    depletion_color="#222222";
+
     seriesname= signal_name+' '+storage_name;
 
 //    else if (chartnumber==1){
@@ -333,14 +332,22 @@ function addGraph(){
           //end time conversion
 
                     var data = new Array(length);
+                    var depletion_data = new Array(length);
                     var this_time = new Date();
                     var this_data = null;
+                    var this_depletion_data = null;
+                    var first_data = variablearray[0];
                     for (var i = 0; i < length; i++) {
                         this_time = timearray[i];
                         this_data = variablearray[i];
+                        this_depletion_data = (variablearray[i] - first_data);
+                        this_depletion_data = (this_depletion_data * 0.00000075) * region_area
                         if (isNaN(this_data))
                             this_data = null;
+                        if (isNaN(this_depletion_data))
+                            this_depletion_data = null;
                         data[i] = [this_time,this_data];
+                        depletion_data[i] = [this_time,this_depletion_data];
                         }
 
 
@@ -353,12 +360,28 @@ function addGraph(){
         color:color,
         tooltip: {
             valueDecimals: 2,
-            valueSuffix: ' ' + testTimeLayer._units,
+            valueSuffix: ' Liquid Water Eqv. Thickness (cm)',
             xDateFormat: '%A, %b %e, %Y',
             headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
         }
     };
     mychart.addSeries(myseries);
+
+    depletion_curve=
+    {
+        name: seriesname + " Depletion Curve",
+        data: depletion_data,
+        type: 'area',
+        color:depletion_color,
+        tooltip: {
+            valueDecimals: 2,
+            valueSuffix: ' Change in Volume since April 16, 2002 (Acre-ft)',
+            xDateFormat: '%A, %b %e, %Y',
+            headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
+        },
+        visible:false
+    };
+    mychart.addSeries(depletion_curve);
            }//for the if statement
       }; // for the onreadystatechange
       xhttp.open("GET", charturl, false);
@@ -434,7 +457,7 @@ get_ts = function(){
                     },
                     yAxis: {
                         title: {
-                            text: "Liquid Water Equivalent Thickness (cm)",
+                            text: "Storage Volume",
                         }
 
                     },
@@ -448,11 +471,25 @@ get_ts = function(){
 //			color: '#2f7ed8',
                         tooltip: {
                             valueDecimals: 2,
-                            valueSuffix: 'cm',
+                            valueSuffix: ' Liquid Water Eqv. Thickness (cm)',
                             xDateFormat: '%A, %b %e, %Y',
                             headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
                         }
-                    }],
+                    },
+                    {
+                        data:result.integr_values,
+                        name: signal_name + storage_name + ' Depletion Curve',
+                        type: 'area',
+                        visible: false,
+                        tooltip: {
+                            valueDecimals: 2,
+                            valueSuffix: ' Change in Volume since April 16, 2002 (Acre-ft)',
+                            xDateFormat: '%A, %b %e, %Y',
+                            headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
+                        }
+                    },
+
+                    ],
                     lang: {
                         noData:'There is no data to display.  Please select a point where data exists.'
                     },
@@ -505,8 +542,10 @@ get_ts = function(){
     };
 
 function updateWMS(){
+    map.removeLayer(Stamen_TonerHybrid);
     map.removeLayer(testTimeLayer);
     map.removeLayer(testTimeConLayer);
+    layer_control.removeLayer(Stamen_TonerHybrid);
     layer_control.removeLayer(testTimeLayer);
     layer_control.removeLayer(testTimeConLayer);
     var type=$("#select_legend").find('option:selected').val();
@@ -523,7 +562,6 @@ function updateWMS(){
 
     teststyle='boxfill/'+type;
     testLayer = L.tileLayer.wms(testWMS, {
-        //layers: 'grace',
         layers:'lwe_thickness',
         format: 'image/png',
         transparent: true,
@@ -547,14 +585,12 @@ function updateWMS(){
         attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
     });
     testTimeConLayer = L.timeDimension.layer.wms.timeseries(testContourLayer, {
-//	    proxy: proxy,
 	    updateTimeDimension: true,
     	name: "Liquid Water Equivalent Thickness",
     	units: "cm",
     	enableNewMarkers: true
     });
     testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
-	    //proxy: proxy,
 	    updateTimeDimension: true,
     	name: "Liquid Water Equivalent Thickness",
     	units: "cm",
@@ -577,6 +613,9 @@ function updateWMS(){
     };
     testLegend.addTo(map);
     map.timeDimension.setCurrentTime(date_value);
+
+    layer_control.addOverlay(Stamen_TonerHybrid, 'Borders and Labels');
+//    Stamen_TonerHybrid.addTo(map);
 
 };
 

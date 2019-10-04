@@ -9,7 +9,7 @@ from itertools import groupby
 import tempfile, shutil, sys
 import calendar
 from netCDF4 import Dataset
-from config import GLOBAL_NETCDF_DIR, SHELL_DIR
+from .config import GLOBAL_NETCDF_DIR, SHELL_DIR
 from django.http import JsonResponse, HttpResponse, Http404
 
 

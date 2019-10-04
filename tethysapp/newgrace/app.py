@@ -201,10 +201,10 @@ class Newgrace(TethysAppBase):
 
         ps_settings = (
             PersistentStoreDatabaseSetting(
-                name='grace_db',
+                name='gracefo_db',
                 description='For storing Region and Thredds metadata',
                 required=True,
-                initializer='newgrace.model.init_grace_db',
+                initializer='newgrace.model.init_gracefo_db',
                 spatial=False,
             ),
         )

@@ -38,17 +38,27 @@ class Region(Base):
     thredds_id = Column(Integer, ForeignKey('thredds.id'))
     display_name = Column(String)
     latlon_bbox = Column(String)
+    reg_area = Column(Float)
 
 
-    def __init__(self, thredds_id,display_name, latlon_bbox):
+    def __init__(self, thredds_id,display_name,latlon_bbox,reg_area):
         """
         Constructor for the table
         """
         self.thredds_id = thredds_id
         self.display_name = display_name
         self.latlon_bbox = latlon_bbox
+        self.reg_area = reg_area
 
 def init_grace_db(engine,first_time):
+    Base.metadata.create_all(engine)
+    # if first_time:
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    session.commit()
+    session.close()
+
+def init_gracefo_db(engine,first_time):
     Base.metadata.create_all(engine)
     # if first_time:
     Session = sessionmaker(bind=engine)

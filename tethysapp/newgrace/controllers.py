@@ -2,10 +2,10 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required,user_passes_test
 from tethys_sdk.gizmos import *
 from .app import *
-from model import *
-from utilities import *
-from config import thredds_url, GLOBAL_NETCDF_DIR, SHELL_DIR
-from update_global_data import *
+from .model import *
+from .utilities import *
+from .config import thredds_url, GLOBAL_NETCDF_DIR, SHELL_DIR
+from .update_global_data import *
 # @login_required()
 def home(request):
     """
@@ -18,7 +18,7 @@ def home(request):
     # download_monthly_gldas_data()
 
 
-    Session = Newgrace.get_persistent_store_database('grace_db',as_sessionmaker=True)
+    Session = Newgrace.get_persistent_store_database('gracefo_db',as_sessionmaker=True)
     session = Session()
     # Query DB for regions
     regions = session.query(Region).all()
@@ -107,11 +107,12 @@ def region(request):
     info = request.GET
 
     region_id = info.get('region-select')
-    Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+    Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
     session = Session()
 
     region = session.query(Region).get(region_id)
     display_name = region.display_name
+    region_area = region.reg_area
 
     bbox = [float(x) for x in region.latlon_bbox.strip("(").strip(")").split(',')]
     json.dumps(bbox)
@@ -173,6 +174,7 @@ def region(request):
 
     context = {"region_id":region_id,
                "thredds_wms":thredds_wms,
+               "region_area": region_area,
                "display_name":display_name,
                "select_layer":select_layer,
                "bbox":bbox,
@@ -195,7 +197,7 @@ def add_region(request):
                                      icon_append='glyphicon glyphicon-home',
                                      ) #Input for the Region Display Name
 
-    Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+    Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
     session = Session()
     # Query DB for geoservers
     thredds_servers = session.query(Thredds).all()
@@ -265,7 +267,7 @@ def manage_regions(request):
     Controller for the app manage_geoservers page.
     """
     #initialize session
-    Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+    Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
     session = Session()
     num_regions = session.query(Region).count()
 
@@ -284,7 +286,7 @@ def manage_regions_table(request):
     Controller for the app manage_geoservers page.
     """
     #initialize session
-    Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+    Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
     session = Session()
     RESULTS_PER_PAGE = 5
     page = int(request.GET.get('page'))
@@ -318,7 +320,7 @@ def manage_thredds_servers(request):
     Controller for the app manage_geoservers page.
     """
     #initialize session
-    Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+    Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
     session = Session()
     num_thredds_servers = session.query(Thredds).count()
     session.close()
@@ -336,7 +338,7 @@ def manage_thredds_servers_table(request):
     Controller for the app manage_geoservers page.
     """
     #initialize session
-    Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+    Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
     session = Session()
     RESULTS_PER_PAGE = 5
     page = int(request.GET.get('page'))

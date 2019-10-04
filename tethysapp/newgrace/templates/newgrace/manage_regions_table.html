@@ -6,6 +6,8 @@
             <th>Delete</th>
             <th>ID</th>
             <th>Name</th>
+            <th>Area (ft^2)</th>
+
         </thead>
     <tbody>
     {% for region in regions %}
@@ -16,6 +18,7 @@
             </td>
             <td class="region-id">{{region.id}}</td>
             <td class="region-name">{{region.display_name}}</td>
+            <td class="region-area">{{region.reg_area}}</td>
             </td>
         </tr>
     {% endfor %}

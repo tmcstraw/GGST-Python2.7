@@ -1,6 +1,6 @@
 var get_ts;
 var mychart;
-var gemo_data =$("#point-lat-lon").val();
+//var gemo_data =$("#point-lat-lon").val();
 var date_value = new Date($("#select_layer").find('option:selected').val());
 var point_grp = L.layerGroup();
 
@@ -24,8 +24,8 @@ var map = L.map('map', {
     attributionControl: true,
     attributionControlOptions:{
         position:'bottomright'},
-    zoom: 1,
-    maxBounds: L.latLngBounds(L.latLng(-90.0,-180.0), L.latLng(90.0,180.0)),
+    zoom: 2,
+    maxBounds: L.latLngBounds(L.latLng(-90.0,-210.0), L.latLng(90.0,210.0)),
     fullscreenControl: true,
     timeDimension: true,
     timeDimensionOptions:{
@@ -44,7 +44,7 @@ var map = L.map('map', {
                 timeSliderDragUpdate: true,
                 loopButton:true,
     },
-    center: [0.0, 0.0],
+    center: [15.0, 10.0],
 });
 
 //var attribution_control = L.control.attribution({
@@ -145,7 +145,7 @@ map.on('fullscreenchange', function() {
 var signal_process = $("#select_signal_process").find('option:selected').val();
 var storage_type = $("#select_storage_type").find('option:selected').val();
 //var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
-var testWMS = thredds_wms+"wms/testAll/grace/temp2/GRC_"+signal_process+"_"+storage_type+".nc";
+var testWMS = thredds_wms+"wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc";
 
 var testLayer = L.tileLayer.wms(testWMS, {
     layers: 'grace',
@@ -165,87 +165,29 @@ var testTimeLayer = L.timeDimension.layer.wms.timeseries(testLayer, {
     enableNewMarkers: true
 });
 
-var clm4WMS = thredds_wms+"wms/testAll/grace/temp2/CLM4_scale_factor_test.nc";
-    scaleFactorLayer = L.tileLayer.wms(clm4WMS, {
-        layers:'SCALE_FACTOR',
-        format:'image/png',
-        transparent: true,
-        opacity: 0.7,
-        styles: 'boxfill/rainbow',
-        colorscalerange:'-0.5,3',
-    });
-
-    scaleFactorTimeLayer = L.timeDimension.layer.wms.timeseries(scaleFactorLayer, {
-	    //proxy: proxy,
-	    updateTimeDimension: true,
-    	name: "Scale Factor",
-    	units: "NA",
-    	enableNewMarkers: true,
-    });
-    leakageErrorLayer = L.tileLayer.wms(clm4WMS, {
-        layers:'LEAKAGE_ERROR',
-        format:'image/png',
-        transparent: true,
-        opacity: 0.7,
-        styles: 'boxfill/rainbow',
-        colorscalerange:'0,10',
-    });
-
-    leakageErrorTimeLayer = L.timeDimension.layer.wms.timeseries(leakageErrorLayer, {
-	    //proxy: proxy,
-	    updateTimeDimension: true,
-    	name: "Leakage Error",
-    	units: "Acre-ft",
-    	enableNewMarkers: true,
-    });
-    measurementErrorLayer = L.tileLayer.wms(clm4WMS, {
-        layers:'MEASUREMENT_ERROR',
-        format:'image/png',
-        transparent: true,
-        opacity: 0.7,
-        styles: 'boxfill/rainbow',
-        colorscalerange:'-0.5,5',
-    });
-
-    measurementErrorTimeLayer = L.timeDimension.layer.wms.timeseries(measurementErrorLayer, {
-	    //proxy: proxy,
-	    updateTimeDimension: true,
-    	name: "Measurement Error",
-    	units: "NA",
-    	enableNewMarkers: true,
-    });
 
 var testLegend = L.control({
     position: 'topright'
     });
-var test2Legend = L.control({
-    position: 'topright'
-    });
-
-
 
 
 var layer_control = L.control.layers(baseLayers).addTo(map);
 baseLayers.ESRI_World_Imagery.addTo(map);
+
+
 
 function updateWMS(){
     map.removeLayer(Stamen_TonerHybrid);
     layer_control.removeLayer(Stamen_TonerHybrid);
     map.removeLayer(testTimeLayer);
     layer_control.removeLayer(testTimeLayer);
-    map.removeLayer(scaleFactorTimeLayer);
-    layer_control.removeLayer(scaleFactorTimeLayer);
-    map.removeLayer(leakageErrorTimeLayer);
-    layer_control.removeLayer(leakageErrorTimeLayer);
-    map.removeLayer(measurementErrorTimeLayer);
-    layer_control.removeLayer(measurementErrorTimeLayer);
 
     var type=$("#select_legend").find('option:selected').val();
     var signal_process = $("#select_signal_process").find('option:selected').val();
     var storage_type = $("#select_storage_type").find('option:selected').val();
     var storage_name = $("#select_storage_type").find('option:selected').text();
 //    var testWMS="http://127.0.0.1:7000/thredds/wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc"
-    var testWMS = thredds_wms+"wms/testAll/grace/temp2/GRC_"+signal_process+"_"+storage_type+".nc";
+    var testWMS = thredds_wms+"wms/testAll/grace/GRC_"+signal_process+"_"+storage_type+".nc";
 
     var date_value = new Date($("#select_layer").find('option:selected').val());
     var colormin = $("#col_min").val();
@@ -273,68 +215,6 @@ function updateWMS(){
 
     layer_control.addOverlay(testTimeLayer, storage_name);
 
-    var clm4WMS = thredds_wms+"wms/testAll/grace/temp2/CLM4_scale_factor_test.nc";
-    scaleFactorLayer = L.tileLayer.wms(clm4WMS, {
-        layers:'SCALE_FACTOR',
-        format:'image/png',
-        transparent: true,
-        opacity: opac,
-        styles: 'boxfill/rainbow',
-        colorscalerange:'-0.5,3',
-        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
-    });
-
-    scaleFactorTimeLayer = L.timeDimension.layer.wms.timeseries(scaleFactorLayer, {
-	    //proxy: proxy,
-	    updateTimeDimension: true,
-    	name: "Scale Factor",
-    	units: "Acre-ft",
-    	enableNewMarkers: true,
-    });
-
-    layer_control.addOverlay(scaleFactorTimeLayer, 'CLM4 Scale Factors');
-
-
-    leakageErrorLayer = L.tileLayer.wms(clm4WMS, {
-        layers:'LEAKAGE_ERROR',
-        format:'image/png',
-        transparent: true,
-        opacity: opac,
-        styles: 'boxfill/rainbow',
-        colorscalerange:'0,10',
-        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
-    });
-
-    leakageErrorTimeLayer = L.timeDimension.layer.wms.timeseries(leakageErrorLayer, {
-	    //proxy: proxy,
-	    updateTimeDimension: true,
-    	name: "Leakage Error",
-    	units: "Acre-ft",
-    	enableNewMarkers: true,
-    });
-
-    layer_control.addOverlay(leakageErrorTimeLayer, 'CLM4 Leakage Errors');
-
-    measurementErrorLayer = L.tileLayer.wms(clm4WMS, {
-        layers:'MEASUREMENT_ERROR',
-        format:'image/png',
-        transparent: true,
-        opacity: opac,
-        styles: 'boxfill/rainbow',
-        colorscalerange:'-0.5,5',
-        attribution: '<a href="https://www.pik-potsdam.de/">PIK</a>'
-    });
-
-    measurementErrorTimeLayer = L.timeDimension.layer.wms.timeseries(measurementErrorLayer, {
-	    //proxy: proxy,
-	    updateTimeDimension: true,
-    	name: "Measurement Error",
-    	units: "NA",
-    	enableNewMarkers: true,
-    });
-
-    layer_control.addOverlay(measurementErrorTimeLayer, 'CLM4 Measurement Errors');
-
     layer_control.addOverlay(Stamen_TonerHybrid, 'Borders and Labels');
 
     testTimeLayer.addTo(map);
@@ -351,85 +231,6 @@ function updateWMS(){
 
     testLegend.addTo(map);
     map.timeDimension.setCurrentTime(date_value);
-
-
-    scaleFactorTimeLayer.on('add', function(event) {
-
-//        layer_control.removeLayer(leakageErrorTimeLayer);
-//        layer_control.addOverlay(leakageErrorTimeLayer, 'CLM4 Leakage Errors');
-//        layer_control.removeLayer(measurementErrorTimeLayer);
-//        layer_control.addOverlay(measurementErrorTimeLayer, 'CLM4 Measurement Errors');
-        leakageErrorTimeLayer.removeFrom(map);
-        measurementErrorTimeLayer.removeFrom(map);
-
-        test2Legend.onAdd= function(map) {
-//            map.removeControl(test2Legend)
-            var src=clm4WMS+"?REQUEST=GetLegendGraphic&LAYER=SCALE_FACTOR&PALETTE=rainbow&COLORSCALERANGE=-0.5,3";
-            var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML +=
-                '<img src="' + src + '" alt="legend" style="width:80%; float:right;">';
-            return div;
-    };
-        test2Legend.addTo(map);
-    });
-
-    scaleFactorTimeLayer.on('remove', function(event) {
-
-            map.removeControl(test2Legend)
-    });
-
-    leakageErrorTimeLayer.on('add', function(event) {
-
-//        layer_control.removeLayer(scaleFactorTimeLayer);
-//        layer_control.addOverlay(scaleFactorTimeLayer, 'CLM4 Scale Factors');
-//        layer_control.removeLayer(measurementErrorTimeLayer);
-//        layer_control.addOverlay(measurementErrorTimeLayer, 'CLM4 Measurement Errors');
-        measurementErrorTimeLayer.removeFrom(map);
-        scaleFactorTimeLayer.removeFrom(map);
-
-        test2Legend.onAdd= function(map) {
-//            map.removeControl(test2Legend)
-            var src=clm4WMS+"?REQUEST=GetLegendGraphic&LAYER=LEAKAGE_ERROR&PALETTE=rainbow&COLORSCALERANGE=0,10";
-            var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML +=
-                '<img src="' + src + '" alt="legend" style="width:80%; float:right;">';
-            return div;
-    };
-        test2Legend.addTo(map);
-    });
-
-    leakageErrorTimeLayer.on('remove', function(event) {
-
-            map.removeControl(test2Legend)
-    });
-
-    measurementErrorTimeLayer.on('add', function(event) {
-        map.removeLayer(scaleFactorTimeLayer);
-        map.removeLayer(leakageErrorTimeLayer);
-
-//        layer_control.removeLayer(scaleFactorTimeLayer);
-//        layer_control.addOverlay(scaleFactorTimeLayer, 'CLM4 Scale Factors');
-//        layer_control.removeLayer(leakageErrorTimeLayer);
-//        layer_control.addOverlay(leakageErrorTimeLayer, 'CLM4 Leakage Errors');
-//        leakageErrorTimeLayer.removeFrom(map);
-//        scaleFactorTimeLayer.removeFrom(map);
-
-        test2Legend.onAdd= function(map) {
-//            map.removeControl(test2Legend)
-            var src=clm4WMS+"?REQUEST=GetLegendGraphic&LAYER=MEASUREMENT_ERROR&PALETTE=rainbow&COLORSCALERANGE=-0.5,5";
-            var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML +=
-                '<img src="' + src + '" alt="legend" style="width:80%; float:right;">';
-            return div;
-    };
-        test2Legend.addTo(map);
-    });
-
-    measurementErrorTimeLayer.on('remove', function(event) {
-
-            map.removeControl(test2Legend)
-    });
-
 };
 
 function getInstructions() {
@@ -508,7 +309,7 @@ get_ts = function(){
                     },
                     yAxis: {
                         title: {
-                            text: "Volume",
+                            text: "Storage Volume",
                         }
 
                     },
@@ -529,7 +330,7 @@ get_ts = function(){
                     },
                     {
                         data:result.integr_values,
-                        name: signal_name + storage_name + ' Integrated',
+                        name: signal_name + storage_name + ' Depletion Curve',
                         type: 'area',
                         visible: false,
                         tooltip: {
@@ -539,42 +340,6 @@ get_ts = function(){
                             headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
                         }
                     },
-//                    {
-//                        data:result.sw_values,
-//                        name: signal_name+' Surface Water Storage (GLDAS)',
-//                        type: 'area',
-//                        visible: false,
-//                        tooltip: {
-//                            valueDecimals: 2,
-//                            valueSuffix: 'cm',
-//                            xDateFormat: '%A, %b %e, %Y',
-//                            headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
-//                        }
-//                    },
-//                    {
-//                        data:result.soil_values,
-//                        name: signal_name+' Soil Moisture Storage (GLDAS)',
-//                        type: 'area',
-//                        visible: false,
-//                        tooltip: {
-//                            valueDecimals: 2,
-//                            valueSuffix: 'cm',
-//                            xDateFormat: '%A, %b %e, %Y',
-//                            headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
-//                        }
-//                    },
-//                    {
-//                        data:result.gw_values,
-//                        name: signal_name+' Groundwater Storage (Calculated)',
-//                        type: 'area',
-//                        visible: false,
-//                        tooltip: {
-//                            valueDecimals: 2,
-//                            valueSuffix: 'cm',
-//                            xDateFormat: '%A, %b %e, %Y',
-//                            headerFormat: '<span style="font-size: 12px; font-weight:bold;">{point.key} (Click to visualize the map on this time)</span><br/>'
-//                        }
-//                    },
                     ],
                     lang: {
                         noData:'There is no data to display.  Please select a point where data exists.'

@@ -3,19 +3,19 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 from tethys_sdk.gizmos import *
-from utilities import *
+from .utilities import *
 import json,time
 from tethys_dataset_services.engines import GeoServerSpatialDatasetEngine
 from sqlalchemy.orm.exc import ObjectDeletedError
 from sqlalchemy.exc import IntegrityError
-from model import *
+from .model import *
 import requests, urlparse
 import shapely.geometry
 import os
 from .app import *
-from config import *
-from SHAZAAM import *
-from utilities import *
+from .config import GLOBAL_NETCDF_DIR
+from .SHAZAAM import *
+from .utilities import *
 
 def get_plot_global(request):
 
@@ -96,6 +96,7 @@ def get_plot_reg_pt(request):
             graph = get_pt_region(pt_coords,nc_file)
             graph = json.loads(graph)
             return_obj["values"] = graph["values"]
+            return_obj["integr_values"] = graph["integr_values"]
             return_obj["location"] = graph["point"]
 
         return_obj["success"] = "success"
@@ -118,7 +119,7 @@ def region_add(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -151,7 +152,7 @@ def subset_initial_processing(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -177,7 +178,7 @@ def subset_jpl_tot(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -203,7 +204,7 @@ def subset_jpl_gw(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -229,7 +230,7 @@ def subset_csr_tot(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -255,7 +256,7 @@ def subset_csr_gw(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -281,7 +282,7 @@ def subset_gfz_tot(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -307,7 +308,7 @@ def subset_gfz_gw(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -333,7 +334,7 @@ def subset_avg_tot(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -359,7 +360,7 @@ def subset_avg_gw(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -386,7 +387,7 @@ def subset_sw(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -412,7 +413,7 @@ def subset_soil(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -438,7 +439,7 @@ def subset_cleanup(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -464,7 +465,7 @@ def subset_update(request):
 
         shapefile = request.FILES.getlist('shapefile')
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -504,7 +505,7 @@ def thredds_server_add(request):
             # cat = Catalog(thredds_url, username=thredds_username, password=thredds_password,disable_ssl_certificate_validation=True)
             # layer_list = cat.get_layers()
             # if layer_list:
-            Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+            Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
             session = Session()
             thredds_server = Thredds(name=thredds_server_name, url=thredds_server_url, username=thredds_server_username, password=thredds_server_password)
             session.add(thredds_server)
@@ -542,7 +543,7 @@ def thredds_server_update(request):
         except ValueError:
             return JsonResponse({'error': 'Thredds Server id is faulty.'})
 
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
 
         thredds = session.query(Thredds).get(thredds_id)
@@ -573,7 +574,7 @@ def thredds_server_delete(request):
         thredds_id = post_info.get('thredds_server_id')
 
         # initialize session
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
         try:
             # delete geoserver
@@ -603,7 +604,7 @@ def region_delete(request):
         region_id = post_info.get('region_id')
 
         # initialize session
-        Session = Newgrace.get_persistent_store_database('grace_db', as_sessionmaker=True)
+        Session = Newgrace.get_persistent_store_database('gracefo_db', as_sessionmaker=True)
         session = Session()
         try:
             # delete region

@@ -1,7 +1,7 @@
 from django.http import JsonResponse
-from utilities import *
+from .utilities import *
 import json
-from config import *
+from .config import *
 
 def api_get_point_values(request):
     json_obj = {}
