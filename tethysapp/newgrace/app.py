@@ -35,16 +35,7 @@ class Newgrace(TethysAppBase):
                 url='global-map',
                 controller='newgrace.controllers.global_map'
             ),
-            UrlMap(
-                name='check-for-updates',
-                url='newgrace/check-for-updates',
-                controller='newgrace.ajax_controllers.check_for_updates'
-            ),
-            UrlMap(
-                name='download-hs-files',
-                url='newgrace/download-hs-files',
-                controller='newgrace.ajax_controllers.download_hs_files'
-            ),
+
             UrlMap(
                 name='update-global-files',
                 url='newgrace/update-global-files',
@@ -72,6 +63,22 @@ class Newgrace(TethysAppBase):
             ),
 
 
+            UrlMap(name='grcfo-update-check-ajax',
+                   url='newgrace/update-global-files/grcfo-update-check',
+                   controller='newgrace.update_global_data.grcfo_update_check'
+            ),
+            UrlMap(name='update-grace-files-ajax',
+                   url='newgrace/update-grace-files',
+                   controller='newgrace.update_global_data.update_grace_files'
+            ),
+            UrlMap(name='download-gldas-data-ajax',
+                   url='newgrace/download-gldas-data',
+                   controller='newgrace.update_global_data.download_gldas_data'
+            ),
+            UrlMap(name='update-other-soulution-files-ajax',
+                   url='newgrace/update-other-soulution-files',
+                   controller='newgrace.update_global_data.update_other_solution_files'
+            ),
 
 
             UrlMap(name='add-region-ajax',

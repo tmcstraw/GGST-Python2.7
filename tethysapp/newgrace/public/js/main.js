@@ -268,5 +268,49 @@ function addInfoMessage(message, div_id) {
 
 }
 
-function checkForUpdatedFiles(){
-    ajax_update_database('check-for-updates',)}
+
+
+checkForUpdates = function(data) {
+        var check_init = ajax_update_database_with_file("grcfo-update-check",data); //Submitting the data through the ajax function, see main.js for the helper function.
+        check_init.done(function(return_data){ //Reset the form once the data is added successfully
+            if("update-available" in return_data){
+                $("#check-modal").modal('show');
+                $("#update-button").modal('show')
+                addInfoMessage("There is new data available would you like to dowload it?","check-message");
+            } else {
+                $("#check-modal").modal('show');
+                $("#update-button").modal('hide')
+                addInfoMessage("Your data is up to date!","check-message");
+
+            };
+        });
+    };
+
+download_new_grcfo_data = function() {
+        var new_grcfo_data = ajax_update_database_with_file("update-grace-files"); //Submitting the data through the ajax function, see main.js for the helper function.
+        new_grcfo_data.done(function(return_data){ //Reset the form once the data is added successfully
+            if("success" in return_data){
+                addInfoMessage("Downloading new GRACE-FO data files","check-message");
+                update_gldas_files();
+            }
+        });
+    };
+
+update_gldas_files = function() {
+        var update_gldas = ajax_update_database_with_file("download-gldas-data-ajax"); //Submitting the data through the ajax function, see main.js for the helper function.
+        update_gldas.done(function(return_data){ //Reset the form once the data is added successfully
+            if("success" in return_data){
+                addInfoMessage("Updating GLDAS files","check-message");
+                update_remaining_files();
+            }
+        });
+    };
+update_remaining_files = function() {
+        var finish_update = ajax_update_database_with_file("update-other-soulution-files"); //Submitting the data through the ajax function, see main.js for the helper function.
+        finish_update.done(function(return_data){ //Reset the form once the data is added successfully
+            if("success" in return_data){
+                addSuccessMessage("The data files were updated successfully","check-message");
+
+            }
+        });
+    };

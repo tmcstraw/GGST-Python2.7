@@ -6,75 +6,38 @@ from ftplib import FTP
 import logging
 import numpy as np
 from itertools import groupby
+from django.contrib.auth.decorators import login_required,user_passes_test
 import tempfile, shutil, sys
 import calendar
 from netCDF4 import Dataset
 from .config import GLOBAL_NETCDF_DIR, SHELL_DIR
 from django.http import JsonResponse, HttpResponse, Http404
+from .utilities import user_permission_test
 
 
-def downloadFile(grace_data_dir):
 
-    ftp = FTP("podaac-ftp.jpl.nasa.gov")
-    ftp.login()
-    ftp.cwd("/allData/tellus/L3/land_mass/RL05/netcdf/")
+@user_passes_test(user_permission_test)
+def grcfo_update_check(data):
+    os.system(SHELL_DIR+'check_for_updates.sh '+GLOBAL_NETCDF_DIR+'testing/')
+    for files in os.walk(GLOBAL_NETCDF_DIR+'testing/'):
+        if "GRCFO_JPLEM" in files:
+            response = {"update-available": "update-available"}
+        else:
+            response = {"not-available": "not-available"}
 
-    files = ftp.nlst()
-    jpl_file_name = "GRC_jpl_tot_test.nc"
-    csr_file_name = "GRC_csr_tot_test.nc"
-    gfz_file_name = "GRC_gfz_tot_test.nc"
-    scale_file_name = "CLM4_scale_factor_test.nc"
-
-
-    if not os.path.exists(grace_data_dir):
-        os.makedirs(grace_data_dir)
-
-    jpl_grace_file_path = os.path.join(grace_data_dir, jpl_file_name)
-    csr_grace_file_path = os.path.join(grace_data_dir, csr_file_name)
-    gfz_grace_file_path = os.path.join(grace_data_dir, gfz_file_name)
-    scale_grace_file_path = os.path.join(grace_data_dir, scale_file_name)
-
-    for filename in files:
-        if filename.startswith("GRCTellus.JPL") and filename.endswith(".nc"):
-            local_filename = os.path.join(grace_data_dir, jpl_file_name)
-            local_file = open(local_filename, 'wb')
-            print "Downloading JPL GRACE file..."
-            ftp.retrbinary('RETR ' + filename, local_file.write)
-
-            local_file.close()
+    return JsonResponse(response)
 
 
-        if filename.startswith("GRCTellus.CSR") and filename.endswith(".nc"):
-            local_filename = os.path.join(grace_data_dir, csr_file_name)
-            local_file = open(local_filename, 'wb')
-            print "Downloading CSR GRACE file..."
-            ftp.retrbinary('RETR ' + filename, local_file.write)
-
-            local_file.close()
-
-        if filename.startswith("GRCTellus.GFZ") and filename.endswith(".nc"):
-            local_filename = os.path.join(grace_data_dir, gfz_file_name)
-            local_file = open(local_filename, 'wb')
-            print "Downloading GFZ GRACE file..."
-            ftp.retrbinary('RETR ' + filename, local_file.write)
-
-            local_file.close()
-
-        if filename.startswith("CLM4") and filename.endswith(".nc"):
-            local_filename = os.path.join(grace_data_dir, scale_file_name)
-            local_file = open(local_filename, 'wb')
-            print "Downloading Scale Factor GRACE file..."
-            ftp.retrbinary('RETR ' + filename, local_file.write)
-
-            local_file.close()
-
-    return jpl_grace_file_path, csr_grace_file_path, gfz_grace_file_path, scale_grace_file_path
+def update_grace_files():
+    os.system(SHELL_DIR+'grcfo_download.sh '+GLOBAL_NETCDF_DIR)
+    return JsonResponse({"success": "success"})
 
 
-def write_gldas_text_file():
+
+def write_gldas_text_file(directory):
     grace_date_st = []
-    grace_nc = GLOBAL_NETCDF_DIR + 'temp/'+'GRC_jpl_tot_test.nc'
-
+    # grace_nc = GLOBAL_NETCDF_DIR + 'temp/'+'GRC_jpl_tot_test.nc'
+    grace_nc = directory+'GRCFO_jpl_total.nc'
     start_date = '01/01/2002:00:00'
     nc_fid = Dataset(grace_nc, 'r') #Reading the netcdf file
     nc_var = nc_fid.variables # Get netcdf Variables
@@ -84,7 +47,8 @@ def write_gldas_text_file():
 
     date_str = datetime.strptime(start_date, "%m/%d/%Y:%H:%M") #Start date String
 
-    f = open(GLOBAL_NETCDF_DIR+"temp/GLDASlinks.txt", 'w')
+    f = open(directory+"GLDASlinks.txt", 'w')
+    # f = open('/Users/travismcstraw/Downloads/test/GLDASlinks.txt', 'w')
 
     for timestep, v in enumerate(time):
         current_time_step = nc_var['lwe_thickness'][timestep, :, :]  # Getting the Index of the current timestep
@@ -110,12 +74,17 @@ def write_gldas_text_file():
 
 
 def download_gldas_data():
-    os.system(SHELL_DIR+'gldas_download.sh '+GLOBAL_NETCDF_DIR+'temp/'+' gracedata1 '+'GRACEData1 '+'GLDASlinks.txt')
+    write_gldas_text_file(GLOBAL_NETCDF_DIR)
+    os.system(SHELL_DIR+'gldas_download_and_update.sh '+GLOBAL_NETCDF_DIR)
+    return JsonResponse({"success": "success"})
+
+def update_other_solution_files():
+    os.system(SHELL_DIR+'other_solutions_update.sh '+GLOBAL_NETCDF_DIR)
 
     return JsonResponse({"success": "success"})
 
 
-def download_monthly_gldas_data():
-    os.system(SHELL_DIR+'monthly_gldas_download.sh '+GLOBAL_NETCDF_DIR+'temp/'+' gracedata1 '+'GRACEData1')
-
-    return JsonResponse({"success": "success"})
+# def download_monthly_gldas_data():
+#     os.system(SHELL_DIR+'monthly_gldas_download.sh '+GLOBAL_NETCDF_DIR+'temp/'+' gracedata1 '+'GRACEData1')
+#
+#     return JsonResponse({"success": "success"})

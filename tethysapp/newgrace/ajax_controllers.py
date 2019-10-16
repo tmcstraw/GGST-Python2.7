@@ -131,6 +131,9 @@ def region_add(request):
 
         return JsonResponse(response)
 
+
+
+
 #############################################################################################
 ##                                                                                         ##
 ##          Chained Subsetting functions see add_region function in add_region.js          ##
@@ -642,36 +645,4 @@ def region_delete(request):
                     shutil.rmtree(region_dir)
         return JsonResponse({'success': "Region sucessfully deleted!"})
     return JsonResponse({'error': "A problem with your request exists."})
-
-def check_for_updates(request):
-    """
-    Controller for checking updates to GRACE Global Files on Hydroshare.
-    """
-    if request.is_ajax() and request.method == 'POST':
-        # get/check information from AJAX request
-        post_info = request.POST
-        region_id = post_info.get('region_id')
-
-
-    return JsonResponse({'error': "A problem with your request exists."})
-
-def download_hs_files(request):
-    # if request.is_ajax and request.method == 'POST':
-    #
-    #     hs = HydroShare()
-    #
-    # staging_dir = GLOBAL_NETCDF_DIR
-    # resourcelist = hs.getResourceFileList(d6900bc0dd5d47caafa6d1e8a91b676b)
-    #
-    # filelist = []
-    #
-    # for resource in resourcelist:
-    #     url = resource['url'].split("/")
-    #     fname = url[-1]
-    #     hs.getResourceFile(d6900bc0dd5d47caafa6d1e8a91b676b, fname, destination=staging_dir)
-    #     filelist.append(fname)
-
-    response = {"success":"success"}
-
-    return JsonResponse(response)
 

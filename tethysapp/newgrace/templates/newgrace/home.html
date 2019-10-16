@@ -220,23 +220,16 @@
 
 <!-- Update Global Files Modal -->
 
-<div class="modal fade" id="update-modal" tabindex="-1" role="dialog" aria-labelledby="update-modal-label">
+<div class="modal fade" id="check-modal" tabindex="-1" role="dialog" aria-labelledby="check-modal-label">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h2 class="modal-title" id="update-modal-label">New Data Available!</h2>
+                <h2 class="modal-title" id="check-modal-label">Check for new data?</h2>
             </div>
             <div class="modal-body">
-
-                <p>A new version of the GRACE global data files is available for download.</p>
-                <br>
-
-                <h3>Would you like to update your global files now?</h3>
-
-                <br>
-                <p>(This may take a few minutes. Download speeds will vary depending on internet connection)</p>
-
+                <div id="check-message">
+                </div>
             </div>
             <div class="modal-footer">
                 <a href="{% url 'newgrace:update-global-files' %}" target="_blank" class="btn btn-default">Update Files</a>
@@ -246,7 +239,6 @@
     </div>
 </div>
 
-<script>window.onload = $("#update-modal").modal('show');</script>
 
 {% endblock %}
 
