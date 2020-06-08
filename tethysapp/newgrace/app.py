@@ -7,7 +7,7 @@ class Newgrace(TethysAppBase):
     Tethys app class for Newgrace.
     """
 
-    name = 'GRACE 2.0'
+    name = 'GRACE Groundwater Subsetting Tool'
     index = 'newgrace:home'
     icon = 'newgrace/images/logo.jpg'
     package = 'newgrace'

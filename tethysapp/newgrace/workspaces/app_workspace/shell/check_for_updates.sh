@@ -11,5 +11,5 @@ rm .netrc
 rm .urs_cookies
 touch .netrc
 
-wget --user=tmcstraw --password=dx1OVatDVDA4E66oNsLa -r -N -np -nH -nd -A "*.nc" https://podaac-tools.jpl.nasa.gov/drive/files/allData/tellus/L3/gracefo/land_mass/RL06/GFZ
+wget --user=tmcstraw --password=44UaeAOUUoTSkPZPpNAq -r -N -np -nH -nd -A "*.nc" https://podaac-tools.jpl.nasa.gov/drive/files/allData/tellus/L3/gracefo/land_mass/RL06/v03/JPL/
 

@@ -18,8 +18,20 @@ from .utilities import user_permission_test
 
 @user_passes_test(user_permission_test)
 def grcfo_update_check(data):
+
+    tday = datetime.date.today()
+    daytoday = tday.ctime()
+
+    print("The date today is ", tday)
+    print("The date info. is ", daytoday)
+
     os.system(SHELL_DIR+'check_for_updates.sh '+GLOBAL_NETCDF_DIR+'testing/')
     for files in os.walk(GLOBAL_NETCDF_DIR+'testing/'):
+
+
+
+        # start_date =
+
         if "GRCFO_JPLEM" in files:
             response = {"update-available": "update-available"}
         else:
@@ -82,6 +94,40 @@ def update_other_solution_files():
     os.system(SHELL_DIR+'other_solutions_update.sh '+GLOBAL_NETCDF_DIR)
 
     return JsonResponse({"success": "success"})
+
+
+def get_global_dates():
+    grace_layer_options = []
+    grace_nc = GLOBAL_NETCDF_DIR+'GRC_jpl_tot.nc'
+    # for file in os.listdir(GLOBAL_DIR):
+    #     if file.startswith('GRC') and file.endswith('.nc'):
+    #         grace_nc = GLOBAL_DIR + file
+
+    start_date = '01/01/2002:00:00:00'
+
+    nc_fid = Dataset(grace_nc, 'r')  # Reading the netcdf file
+    nc_var = nc_fid.variables  # Get the netCDF variables
+    nc_dim = nc_fid.dimensions
+    print(nc_dim)
+
+    nc_var.keys()  # Getting variable keys
+
+    time = nc_var['time'][:]
+    print (time)
+    date_str = datetime.strptime(start_date, "%m/%d/%Y:%H:%M:%S")  # Start Date string.
+
+    for timestep, v in enumerate(time):
+        current_time_step = nc_var['lwe_thickness'][timestep, :, :]  # Getting the index of the current timestep
+
+        end_date = date_str + timedelta(days=float(v))  # Actual human readable date of the timestep
+
+        ts_file_name = end_date.strftime("%Y-%m-%d:%H:%M:%S")  # Changing the date string format
+        ts_display = end_date.strftime("%Y %B %d")
+        grace_layer_options.append([ts_display,ts_file_name])
+
+    return grace_layer_options
+
+
 
 
 # def download_monthly_gldas_data():

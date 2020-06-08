@@ -86,11 +86,12 @@ def get_plot_reg_pt(request):
 
         GLOBAL_DIR = os.path.join(GLOBAL_NETCDF_DIR, '')
 
-        FILE_DIR = os.path.join(GLOBAL_DIR, '')
+        # FILE_DIR = os.path.join(GLOBAL_DIR, '')
 
-        region_dir = os.path.join(FILE_DIR + region_store, '')
+        # region_dir = os.path.join(FILE_DIR + region_store, '')
 
-        nc_file = os.path.join(region_dir+region_store+"_"+signal_solution+"_"+storage_type+".nc")
+        # nc_file = os.path.join(region_dir+region_store+"_"+signal_solution+"_"+storage_type+".nc")
+        nc_file = GLOBAL_DIR + 'GRC_' + signal_solution + '_' + storage_type + '.nc'
 
         if pt_coords:
             graph = get_pt_region(pt_coords,nc_file)
